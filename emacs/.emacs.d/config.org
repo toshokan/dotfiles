@@ -1,0 +1,327 @@
+* Interface Configuration 
+** Get rid of graphical prompts
+#+BEGIN_SRC emacs-lisp
+(setq use-dialog-box nil)
+#+END_SRC
+** Hide unnecessary panels
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+#+END_SRC
+** Mode Line
+*** Time and battery
+#+BEGIN_SRC emacs-lisp
+  (display-time-mode)
+  (column-number-mode)
+#+END_SRC
+*** Line numbers
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook (lambda ()
+                              (setq-local display-line-numbers 'relative)))
+#+END_SRC
+** Themes
+*** zenburn
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package zenburn-theme
+  ;;   :ensure t)
+#+end_SRC
+*** solarized
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package solarized-theme
+  ;;   :init
+  ;;   (setq solarized-distinct-fringe-background t
+  ;;         solarized-use-variable-pitch nil
+  ;;         solarized-high-contrast-mode-line t
+  ;;         solarized-height-minus-1 1.0
+  ;;         solarized-height-plus-1 1.0
+  ;;         solarized-height-plus-2 1.0
+  ;;         solarized-height-plus-3 1.0
+  ;;         solarized-height-plus-4 1.0)
+  ;;   :ensure t
+  ;;   :config (load-theme 'solarized-dark))
+#+END_SRC
+*** base16-tomorrow
+#+BEGIN_SRC emacs-lisp
+  (use-package base16-theme
+    :ensure t
+    :config
+    (load-theme 'base16-tomorrow-night t))
+#+END_SRC
+* Packages
+** ace-jump
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-jump-mode
+    :ensure t
+    :bind (("C-'" . 'ace-jump-word-mode)
+           ("C-\"" . 'ace-jump-char-mode)))
+#+END_SRC
+** ace-window
+#+BEGIN_SRC emacs-lisp
+    (use-package ace-window
+      :ensure t
+      :config
+      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+END_SRC
+** auctex
+#+BEGIN_SRC emacs-lisp
+  (use-package latex
+    :ensure auctex
+    :config
+    (setq TeX-auto-save t
+          TeX-parse-self t
+          TeX-view-program-selection '((output-pdf "PDF Tools"))
+          TeX-source-correlate-start-server t)
+    (setq-default TeX-master nil
+                  TeX-engine 'luatex)
+    (add-hook 'TeX-after-compilation-finished-functions 
+              'TeX-revert-document-buffer))
+  (use-package company-auctex
+    :ensure t)
+#+END_SRC
+** company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 2)
+  (add-hook 'prog-mode-hook 'company-mode))
+#+END_SRC
+** expand-region
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind (("C-;" . 'expand-region)))
+#+END_SRC
+** flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :config
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+    (add-hook 'prog-mode-hook 'flycheck-mode))
+#+END_SRC
+** haskell-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :ensure t)
+#+END_SRC
+** hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t)
+#+END_SRC
+** irony
+#+BEGIN_SRC emacs-lisp
+  (use-package irony
+    :ensure t
+    :config
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+#+END_SRC
+** ivy
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1)
+  (use-package counsel
+    :ensure t)
+  (use-package swiper
+    :ensure t)
+  (counsel-mode)
+  (setq ivy-initial-inputs-alist nil)
+  :bind (("C-S-s" . 'swiper)))
+  ;; (global-set-key (kbd "C-S-s") 'swiper))
+  ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  ;; (global-set-key (kbd "C-c g") 'counsel-git)
+  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+  ;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+#+END_SRC
+** language-server-protocol
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :config)
+  (use-package lsp-ui
+    :ensure t
+    :config)
+  (use-package company-lsp
+    :ensure t)
+#+END_SRC
+*** haskell
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package lsp-haskell
+  ;;   :ensure t
+  ;;   :config
+  ;;   (add-hook 'haskell-mode-hook 'lsp-haskell-enable)
+  ;;   (add-hook 'haskell-mode-hook 'flycheck-mode))
+#+END_SRC
+** magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind (("C-c g" . 'magit-status)))
+#+END_SRC
+** multiple-cursors
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t)
+#+END_SRC
+** pdf-tools
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools
+  :ensure t
+  :config
+  (pdf-tools-install))
+#+END_SRC
+** smartparens
+#+BEGIN_SRC emacs-lisp
+(use-package smartparens
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'smartparens-mode))
+#+END_SRC
+** rainbow
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+#+END_SRC
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (use-package yasnippet-snippets
+      :ensure t)
+    (yas-reload-all)
+    (add-hook 'prog-mode-hook 'yas-minor-mode))
+#+END_SRC
+** which-key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode))
+#+END_SRC
+* Mode configuration
+** org-mode
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-mode-hook 'yas-minor-mode)
+     (add-hook 'org-mode-hook 'org-indent-mode)
+   #+END_SRC
+* Functions
+** kill-current-buffer
+#+BEGIN_SRC emacs-lisp
+  (defun toshokan/kill-current-buffer ()
+    (interactive)
+    (kill-buffer (current-buffer)))
+#+END_SRC
+** edit/view configuration
+#+BEGIN_SRC emacs-lisp
+  (defun toshokan/find-config ()
+    (interactive)
+    (find-file (expand-file-name "~/.emacs.d/config.org")))
+  (defun toshokan/reload-config ()
+    (interactive)
+    (conf-manager/load-files))
+#+END_SRC
+* Miscellaneous Bindings
+** Hydras
+*** Configuration
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-config (:color blue)
+    "config"
+    ("f" toshokan/find-config "find")
+    ("r" toshokan/reload-config "reload")
+    ("if" (find-file (concat user-emacs-directory "init.el")) "find init.el")
+    ("ir" (load-file (concat user-emacs-directory "init.el")) "reload init.el"))
+  (global-set-key (kbd "C-c c") 'hydra-config/body)
+#+END_SRC
+*** Current buffer
+#+BEGIN_SRC emacs-lisp
+    (defhydra hydra-current-buffer (:color blue)
+      "current buffer"
+      ("r" revert-buffer "revert")
+      ("k" toshokan/kill-current-buffer "kill")
+      ("K" kill-buffer-and-window "kill with window"))
+    (global-set-key (kbd "C-c b") 'hydra-current-buffer/body)
+#+END_SRC
+*** Hydra index
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-index (:color blue)
+    ("s" hydra-smartparens/body "smartparens")
+    ("m" hydra-multiple-cursors/body "multiple-cursors")
+    ("r" hydra-rectangle/body "rectangles"))
+  (global-set-key (kbd "C-c z") 'hydra-index/body)
+#+END_SRC
+*** multiple-cursors
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-multiple-cursors (:color red)
+    "multiple cursors"
+    ("e" mc/edit-lines "edit lines" :color blue)
+    ("a" mc/mark-all-like-this "mark all")
+    ("n" mc/mark-next-like-this "mark next")
+    ("N" mc/unmark-next-like-this "unmark next")
+    ("p" mc/mark-previous-like-this "mark previous")
+    ("P" mc/unmark-previous-like-this "unmark previous")
+    ("sn" mc/skip-to-next-like-this "skip to next")
+    ("sp" mc/skip-to-previous-like-this "skip to prev"))
+#+END_SRC
+*** rectangles
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-rectangle (:color blue)
+    "rectangles"
+    ("s" string-rectange "string")
+    ("i" string-insert-rectangle "string insert"))
+#+END_SRC
+*** smartparens
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-smartparens (:color blue)
+    "smartparens"
+    ("(" sp-wrap-round "wrap round")
+    ("{" sp-wrap-curly "wrap brace")
+    ("[" sp-wrap-square "wrap square")
+    ("u" sp-unwrap-sexp "unwrap")
+    ("s" sp-forward-slurp-sexp "forward slurp")
+    ("S" sp-backward-slurp-sexp "backward slurp")
+    ("b" sp-forward-barf-sexp "forward barf")
+    ("B" sp-backward-barf-sexp "backward barf")
+    ("k" sp-kill-sexp "kill")
+    ("K" sp-backward-kill-sexp "backward kill"))
+#+END_SRC
+*** Windows
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-window ()
+    "window motion"
+    ("a" ace-window "ace" :color blue)
+    ("b" windmove-left "left")
+    ("n" windmove-down "down")
+    ("p" windmove-up "up")
+    ("f" windmove-right "right"))
+  (global-set-key (kbd "C-c w") 'hydra-window/body)
+#+END_SRC
+** No sleep keys
+#+BEGIN_SRC emacs-lisp
+  (global-unset-key (kbd "C-z"))
+#+END_SRC
+* General behaviour
+** Backup/autosave location
+#+BEGIN_SRC emacs-lisp
+  (defconst emacs-tmp-dir (expand-file-name "~/tmp/emacs/"))
+  (setq backup-directory-alist `((".*" . ,(concat emacs-tmp-dir "backup/")))
+	auto-save-file-name-transforms `((".*" ,(concat emacs-tmp-dir "autosave/") t)))
+#+END_SRC
+
