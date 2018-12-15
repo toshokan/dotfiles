@@ -58,14 +58,16 @@
 #+END_SRC
 ** ace-window
 #+BEGIN_SRC emacs-lisp
-    (use-package ace-window
-      :ensure t
-      :config
-      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+  (use-package ace-window
+    :defer t
+    :ensure t
+    :config
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 #+END_SRC
 ** auctex
 #+BEGIN_SRC emacs-lisp
   (use-package latex
+    :defer t
     :ensure auctex
     :config
     (setq TeX-auto-save t
@@ -77,16 +79,17 @@
     (add-hook 'TeX-after-compilation-finished-functions 
               'TeX-revert-document-buffer))
   (use-package company-auctex
+    :defer t
     :ensure t)
 #+END_SRC
 ** company
 #+BEGIN_SRC emacs-lisp
-(use-package company
-  :ensure t
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 2)
-  (add-hook 'prog-mode-hook 'company-mode))
+  (use-package company
+    :ensure t
+    :hook (prog-mode . company-mode)
+    :config
+    (setq company-idle-delay 0
+          company-minimum-prefix-length 2))
 #+END_SRC
 ** expand-region
 #+BEGIN_SRC emacs-lisp
@@ -98,9 +101,9 @@
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
+    :hook (prog-mode . flycheck-mode)
     :config
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-    (add-hook 'prog-mode-hook 'flycheck-mode))
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+END_SRC
 ** haskell-mode
 #+BEGIN_SRC emacs-lisp
@@ -116,9 +119,10 @@
 #+BEGIN_SRC emacs-lisp
   (use-package irony
     :ensure t
+    :hook ((c-mode . irony-mode)
+           (c++-mode . irony-mode)
+           (irony-mode . irony-cdb-autosetup-compile-options))
     :config
-    (add-hook 'c-mode-hook 'irony-mode)
-    (add-hook 'c++-mode-hook 'irony-mode)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 #+END_SRC
 ** ivy
@@ -151,12 +155,15 @@
 ** language-server-protocol
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
+    :defer t
     :ensure t
     :config)
   (use-package lsp-ui
+    :defer t
     :ensure t
     :config)
   (use-package company-lsp
+    :defer t
     :ensure t)
 #+END_SRC
 *** haskell
@@ -176,38 +183,40 @@
 ** multiple-cursors
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
+    :defer t
     :ensure t)
 #+END_SRC
 ** pdf-tools
 #+BEGIN_SRC emacs-lisp
-(use-package pdf-tools
-  :ensure t
-  :config
-  (pdf-tools-install))
+  (use-package pdf-tools
+    :defer t
+    :ensure t
+    :config
+    (pdf-tools-install))
 #+END_SRC
 ** smartparens
 #+BEGIN_SRC emacs-lisp
-(use-package smartparens
-  :ensure t
-  :config
-  (add-hook 'prog-mode-hook 'smartparens-mode))
+  (use-package smartparens
+    :ensure t
+    :hook (prog-mode . smartparens-mode))
 #+END_SRC
 ** rainbow
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
     :ensure t
-    :config
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 ** yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
+    :defer t
     :ensure t
+    :hook (prog-mode . yas-minor-mode)
     :config
     (use-package yasnippet-snippets
+      :defer t
       :ensure t)
-    (yas-reload-all)
-    (add-hook 'prog-mode-hook 'yas-minor-mode))
+    (yas-reload-all))
 #+END_SRC
 ** which-key
 #+BEGIN_SRC emacs-lisp
