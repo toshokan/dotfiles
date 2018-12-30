@@ -333,4 +333,7 @@
   (setq backup-directory-alist `((".*" . ,(concat emacs-tmp-dir "backup/")))
 	auto-save-file-name-transforms `((".*" ,(concat emacs-tmp-dir "autosave/") t)))
 #+END_SRC
-
+** Configuration-specific settings
+#+BEGIN_SRC emacs-lisp
+  (setq vc-follow-symlinks t)
+#+END_SRC
