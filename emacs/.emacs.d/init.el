@@ -19,7 +19,7 @@
     ("3380a2766cf0590d50d6366c5a91e976bdc3c413df963a0ab9952314b4577299" default)))
  '(package-selected-packages
    (quote
-    (flycheck-irony pdf-tools company-auctex auctex magit which-key cider base16-theme solarized-theme zenburn-theme rainbow-delimiters expand-region multiple-cursors ace-jump-mode ace-window hydra company-irony irony company-lsp lsp-haskell lsp-ui lsp-mode haskell-mode counsel ivy smartparens yasnippet-snippets yasnippet company exwm use-package))))
+    (flycheck flycheck-irony pdf-tools company-auctex auctex magit which-key cider base16-theme solarized-theme zenburn-theme rainbow-delimiters expand-region multiple-cursors ace-jump-mode ace-window hydra company-irony irony company-lsp lsp-haskell lsp-ui lsp-mode haskell-mode counsel ivy smartparens yasnippet-snippets yasnippet company exwm use-package))))
 (put 'dired-find-alternate-file 'disabled nil)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
