@@ -49,6 +49,14 @@
     (load-theme 'base16-tomorrow-night t))
 #+END_SRC
 * Packages
+** use-package
+Ensure that ~use-package~ is always pulled in so that the rest of the
+packages can be installed.
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+#+END_SRC
 ** ace-jump
 #+BEGIN_SRC emacs-lisp
   (use-package ace-jump-mode
