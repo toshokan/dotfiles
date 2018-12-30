@@ -2,16 +2,12 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 
-;; ++ Configuration management
-(require 'conf-manager
-	 (expand-file-name (concat user-emacs-directory "confmgr.el")))
-(conf-manager/initialize)
+(defun tkn/load-org-config-file-from-emacs-d (file-name)
+  (org-babel-load-file
+   (concat
+    (expand-file-name user-emacs-directory) file-name)))
 
-(setq conf-manager/enable-exwm nil
-      conf-manager/enable-base t)
-
-(conf-manager/load-files)
-;; --
+(tkn/load-org-config-file-from-emacs-d "config.org")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
