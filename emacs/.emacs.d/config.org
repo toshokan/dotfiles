@@ -1,4 +1,11 @@
 * Interface Configuration 
+** Faces
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil
+                      :height 91
+                      :foundry "IBM"
+                      :family "IBM Plex Mono")
+#+END_SRC
 ** Get rid of graphical prompts
 #+BEGIN_SRC emacs-lisp
 (setq use-dialog-box nil)
@@ -342,6 +349,16 @@ packages can be installed.
 	auto-save-file-name-transforms `((".*" ,(concat emacs-tmp-dir "autosave/") t)))
 #+END_SRC
 ** Configuration-specific settings
+*** Always follow symlinks
 #+BEGIN_SRC emacs-lisp
   (setq vc-follow-symlinks t)
 #+END_SRC
+*** Keep Emacs "custom" files untracked
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (tkn/emacs-d-filename "custom.el"))
+  ;; File might not exist yet. Create an empty one.
+  (unless (file-exists-p custom-file)
+    (write-region "" nil custom-file))
+  (load custom-file)
+#+END_SRC
+
