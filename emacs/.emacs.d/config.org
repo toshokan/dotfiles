@@ -6,48 +6,33 @@
                       :foundry "IBM"
                       :family "IBM Plex Mono")
 #+END_SRC
+
 ** Get rid of graphical prompts
 #+BEGIN_SRC emacs-lisp
 (setq use-dialog-box nil)
 #+END_SRC
+
 ** Hide unnecessary panels
 #+BEGIN_SRC emacs-lisp
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
 #+END_SRC
+
 ** Mode Line
 *** Time and battery
 #+BEGIN_SRC emacs-lisp
   (display-time-mode)
   (column-number-mode)
 #+END_SRC
+
 *** Line numbers
 #+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook (lambda ()
                               (setq-local display-line-numbers 'relative)))
 #+END_SRC
+
 ** Themes
-*** zenburn
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package zenburn-theme
-  ;;   :ensure t)
-#+end_SRC
-*** solarized
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package solarized-theme
-  ;;   :init
-  ;;   (setq solarized-distinct-fringe-background t
-  ;;         solarized-use-variable-pitch nil
-  ;;         solarized-high-contrast-mode-line t
-  ;;         solarized-height-minus-1 1.0
-  ;;         solarized-height-plus-1 1.0
-  ;;         solarized-height-plus-2 1.0
-  ;;         solarized-height-plus-3 1.0
-  ;;         solarized-height-plus-4 1.0)
-  ;;   :ensure t
-  ;;   :config (load-theme 'solarized-dark))
-#+END_SRC
 *** base16-tomorrow
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
@@ -55,8 +40,10 @@
     :config
     (load-theme 'base16-tomorrow-night t))
 #+END_SRC
+
 * Packages
-** use-package
+** Meta
+*** use-package
 Ensure that ~use-package~ is always pulled in so that the rest of the
 packages can be installed.
 #+BEGIN_SRC emacs-lisp
@@ -64,22 +51,88 @@ packages can be installed.
     (package-refresh-contents)
     (package-install 'use-package))
 #+END_SRC
-** ace-jump
+
+** Bindings
+*** hydra
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-jump-mode
-    :ensure t
-    :bind (("C-'" . 'ace-jump-word-mode)
-           ("C-\"" . 'ace-jump-char-mode)))
+  (use-package hydra
+    :ensure t)
 #+END_SRC
-** ace-window
+
+*** which-key
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-window
-    :defer t
+  (use-package which-key
     :ensure t
     :config
-    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+    (which-key-mode))
 #+END_SRC
-** auctex
+
+** Completion and Error Checking
+*** company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :hook (prog-mode . company-mode)
+    :config
+    (setq company-idle-delay 0
+          company-minimum-prefix-length 2))
+#+END_SRC
+
+*** flycheck
+Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-mode~
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :hook (prog-mode . flycheck-mode)
+    :config
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+#+END_SRC
+
+*** language-server-protocol
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :defer t
+    :ensure t
+    :config)
+  (use-package lsp-ui
+    :defer t
+    :ensure t
+    :config)
+  (use-package company-lsp
+    :defer t
+    :ensure t)
+#+END_SRC
+
+** Language and Filetype Support
+*** C/C++
+**** irony
+#+BEGIN_SRC emacs-lisp
+  (use-package irony
+    :ensure t
+    :hook ((c-mode . irony-mode)
+           (c++-mode . irony-mode)
+           (irony-mode . irony-cdb-autosetup-compile-options))
+    :config
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+#+END_SRC
+
+*** Clojure
+**** cider
+#+BEGIN_SRC emacs-lisp
+  (use-package cider
+    :ensure t
+    :defer t)
+#+END_SRC
+
+**** rainbow-delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+*** LaTeX
+**** AUCTeX
 #+BEGIN_SRC emacs-lisp
   (use-package latex
     :defer t
@@ -97,50 +150,77 @@ packages can be installed.
     :defer t
     :ensure t)
 #+END_SRC
-** company
+
+*** Rust
+**** racer, rust-mode
 #+BEGIN_SRC emacs-lisp
-  (use-package company
+  (use-package rust-mode
     :ensure t
-    :hook (prog-mode . company-mode)
-    :config
-    (setq company-idle-delay 0
-          company-minimum-prefix-length 2))
+    :defer t)
+  (use-package racer
+    :hook ((rust-mode . racer-mode)
+           (racer-mode . eldoc-mode)
+           (racer-mode . company-mode)))
 #+END_SRC
-** expand-region
+
+*** Haskell
+**** haskell-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :ensure t)
+#+END_SRC
+
+*** PDF
+**** pdf-tools
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :defer t
+    :ensure t
+    :config
+    (pdf-tools-install))
+#+END_SRC
+
+** Motion, Editing, and Navigation
+*** ace-jump
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-jump-mode
+    :ensure t
+    :bind (("C-'" . 'ace-jump-word-mode)
+           ("C-\"" . 'ace-jump-char-mode)))
+#+END_SRC
+
+*** ace-window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :defer t
+    :ensure t
+    :config
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+END_SRC
+
+*** expand-region
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
     :bind (("C-;" . 'expand-region)))
 #+END_SRC
-** flycheck
+
+*** smartparens
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
+  (use-package smartparens
     :ensure t
-    :hook (prog-mode . flycheck-mode)
-    :config
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+    :hook (prog-mode . smartparens-mode))
 #+END_SRC
-** haskell-mode
+
+*** multiple-cursors
 #+BEGIN_SRC emacs-lisp
-  (use-package haskell-mode
+  (use-package multiple-cursors
+    :defer t
     :ensure t)
 #+END_SRC
-** hydra
-#+BEGIN_SRC emacs-lisp
-  (use-package hydra
-    :ensure t)
-#+END_SRC
-** irony
-#+BEGIN_SRC emacs-lisp
-  (use-package irony
-    :ensure t
-    :hook ((c-mode . irony-mode)
-           (c++-mode . irony-mode)
-           (irony-mode . irony-cdb-autosetup-compile-options))
-    :config
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-#+END_SRC
-** ivy
+
+** Paradigms
+*** ivy
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :ensure t
@@ -167,61 +247,9 @@ packages can be installed.
   ;; (global-set-key (kbd "C-x l") 'counsel-locate)
   ;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 #+END_SRC
-** language-server-protocol
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :defer t
-    :ensure t
-    :config)
-  (use-package lsp-ui
-    :defer t
-    :ensure t
-    :config)
-  (use-package company-lsp
-    :defer t
-    :ensure t)
-#+END_SRC
-*** haskell
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package lsp-haskell
-  ;;   :ensure t
-  ;;   :config
-  ;;   (add-hook 'haskell-mode-hook 'lsp-haskell-enable)
-  ;;   (add-hook 'haskell-mode-hook 'flycheck-mode))
-#+END_SRC
-** magit
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t
-    :bind (("C-c g" . 'magit-status)))
-#+END_SRC
-** multiple-cursors
-#+BEGIN_SRC emacs-lisp
-  (use-package multiple-cursors
-    :defer t
-    :ensure t)
-#+END_SRC
-** pdf-tools
-#+BEGIN_SRC emacs-lisp
-  (use-package pdf-tools
-    :defer t
-    :ensure t
-    :config
-    (pdf-tools-install))
-#+END_SRC
-** smartparens
-#+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :ensure t
-    :hook (prog-mode . smartparens-mode))
-#+END_SRC
-** rainbow
-#+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-    :ensure t
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
-** yasnippet
+
+** Snippets
+*** yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :defer t
@@ -233,13 +261,15 @@ packages can be installed.
       :ensure t)
     (yas-reload-all))
 #+END_SRC
-** which-key
+
+** Version Control
+*** magit
 #+BEGIN_SRC emacs-lisp
-  (use-package which-key
+  (use-package magit
     :ensure t
-    :config
-    (which-key-mode))
+    :bind (("C-c g" . 'magit-status)))
 #+END_SRC
+
 * Mode configuration
 ** org-mode
    #+BEGIN_SRC emacs-lisp
@@ -249,27 +279,29 @@ packages can be installed.
 * Functions
 ** kill-current-buffer
 #+BEGIN_SRC emacs-lisp
-  (defun toshokan/kill-current-buffer ()
+  (defun tkn/kill-current-buffer ()
     (interactive)
     (kill-buffer (current-buffer)))
 #+END_SRC
+
 ** edit/view configuration
 #+BEGIN_SRC emacs-lisp
-  (defun toshokan/find-config ()
+  (defun tkn/find-config ()
     (interactive)
     (find-file (expand-file-name "~/.emacs.d/config.org")))
-  (defun toshokan/reload-config ()
+  (defun tkn/reload-config ()
     (interactive)
-    (conf-manager/load-files))
+    (tkn/load-configs))
 #+END_SRC
+
 * Miscellaneous Bindings
 ** Hydras
 *** Configuration
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-config (:color blue)
     "config"
-    ("f" toshokan/find-config "find")
-    ("r" toshokan/reload-config "reload")
+    ("f" tkn/find-config "find")
+    ("r" tkn/reload-config "reload")
     ("if" (find-file (concat user-emacs-directory "init.el")) "find init.el")
     ("ir" (load-file (concat user-emacs-directory "init.el")) "reload init.el"))
   (global-set-key (kbd "C-c c") 'hydra-config/body)
@@ -279,7 +311,7 @@ packages can be installed.
     (defhydra hydra-current-buffer (:color blue)
       "current buffer"
       ("r" revert-buffer "revert")
-      ("k" toshokan/kill-current-buffer "kill")
+      ("k" tkn/kill-current-buffer "kill")
       ("K" kill-buffer-and-window "kill with window"))
     (global-set-key (kbd "C-c b") 'hydra-current-buffer/body)
 #+END_SRC

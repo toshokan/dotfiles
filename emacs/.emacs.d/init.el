@@ -10,4 +10,8 @@
   (org-babel-load-file
    (tkn/emacs-d-filename file-name)))
 
-(tkn/load-org-config-file-from-emacs-d "config.org")
+(defun tkn/load-configs ()
+  (tkn/load-org-config-file-from-emacs-d "config.org"))
+
+(tkn/load-configs)
+
