@@ -3,14 +3,23 @@
 (package-initialize)
 
 (defun tkn/emacs-d-filename (rel-name)
+  "Evaluates to an absolute path to a file named `rel-name` in
+the user's Emacs directory"
   (concat
    (expand-file-name user-emacs-directory) rel-name))
 
-(defun tkn/load-org-config-file-from-emacs-d (file-name)
-  (org-babel-load-file
-   (tkn/emacs-d-filename file-name)))
+(defvar tkn/conf-list (list (tkn/emacs-d-filename "config.org"))
+  "A list of config files to be sourced.")
 
 (defun tkn/load-configs ()
-  (tkn/load-org-config-file-from-emacs-d "config.org"))
+  "Load each config file referenced in `tkn/conf-list`. If it is
+an `org` file, runs it through `org-babel-load-file`, otherwise
+assumes it is `elisp`"
+  (let ((load-f (lambda (file-name)
+		 (if (string-match ".org\\'" file-name)
+		     (org-babel-load-file file-name)
+		   (load-file file-name)))))
+    (mapcar load-f tkn/conf-list)))
 
+;; Load all necessary configs
 (tkn/load-configs)
