@@ -14,4 +14,3 @@
   (tkn/load-org-config-file-from-emacs-d "config.org"))
 
 (tkn/load-configs)
-
