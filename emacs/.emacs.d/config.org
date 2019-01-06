@@ -1,48 +1,5 @@
-* Interface Configuration 
-** Faces
-#+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil
-                      :height 91
-                      :foundry "IBM"
-                      :family "IBM Plex Mono")
-#+END_SRC
-
-** Get rid of graphical prompts
-#+BEGIN_SRC emacs-lisp
-(setq use-dialog-box nil)
-#+END_SRC
-
-** Hide unnecessary panels
-#+BEGIN_SRC emacs-lisp
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-#+END_SRC
-
-** Mode Line
-*** Time and battery
-#+BEGIN_SRC emacs-lisp
-  (display-time-mode)
-  (column-number-mode)
-#+END_SRC
-
-*** Line numbers
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'prog-mode-hook (lambda ()
-                              (setq-local display-line-numbers 'relative)))
-#+END_SRC
-
-** Themes
-*** base16-tomorrow
-#+BEGIN_SRC emacs-lisp
-  (use-package base16-theme
-    :ensure t
-    :config
-    (load-theme 'base16-tomorrow-night t))
-#+END_SRC
-
-* Packages
-** Meta
+* Early Startup Tasks
+** Ensure we can load packages
 *** use-package
 Ensure that ~use-package~ is always pulled in so that the rest of the
 packages can be installed.
@@ -52,6 +9,62 @@ packages can be installed.
     (package-install 'use-package))
 #+END_SRC
 
+* General Configuration 
+** Change ~*scratch*~ major mode
+By default ~*scratch*~ runs in ~lisp-interaction-mode~, which is a
+~prog-mode~.  This means all the trouble we go through to delay some
+package initializations until after ~prog-mode~ is useless.
+#+BEGIN_SRC emacs-lisp
+  (setq initial-major-mode 'fundamental-mode)
+#+END_SRC
+** Unbind sleep keys
+#+BEGIN_SRC emacs-lisp
+  (global-unset-key (kbd "C-z"))
+#+END_SRC
+** Visual
+*** Faces
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil
+                      :height 91
+                      :foundry "IBM"
+                      :family "IBM Plex Mono")
+#+END_SRC
+
+*** Get rid of graphical prompts
+#+BEGIN_SRC emacs-lisp
+(setq use-dialog-box nil)
+#+END_SRC
+
+*** Hide unnecessary panels
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+#+END_SRC
+
+*** Mode Line
+**** Time and battery
+#+BEGIN_SRC emacs-lisp
+  (display-time-mode)
+  (column-number-mode)
+#+END_SRC
+
+**** Line numbers
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook (lambda ()
+                              (setq-local display-line-numbers 'relative)))
+#+END_SRC
+
+*** Themes
+*** base16-tomorrow
+#+BEGIN_SRC emacs-lisp
+  (use-package base16-theme
+    :ensure t
+    :config
+    (load-theme 'base16-tomorrow-night t))
+#+END_SRC
+
+* Packages
 ** Bindings
 *** hydra
 #+BEGIN_SRC emacs-lisp
@@ -158,6 +171,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :ensure t
     :defer t)
   (use-package racer
+    :ensure t
     :hook ((rust-mode . racer-mode)
            (racer-mode . eldoc-mode)
            (racer-mode . company-mode)))
@@ -254,22 +268,40 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package yasnippet
     :defer t
     :ensure t
-    :hook (prog-mode . yas-minor-mode)
-    :config
-    (use-package yasnippet-snippets
-      :defer t
-      :ensure t)
-    (yas-reload-all))
+    :hook (prog-mode . yas-minor-mode))
 #+END_SRC
-
-** Version Control
+**** snippets
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet-snippets
+    :defer t
+    :ensure t
+    :after (yasnippet)
+    :config (yas-reload-all))
+#+END_SRC
+** Version Control, Projects, and Workflow
 *** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
+    :defer t
     :bind (("C-c g" . 'magit-status)))
 #+END_SRC
-
+*** projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :init
+    :config
+    (projectile-mode +1)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+#+END_SRC
+**** Counsel/Ivy integration
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel-projectile
+    :ensure t
+    :config
+    (counsel-projectile-mode))
+#+END_SRC
 * Mode configuration
 ** org-mode
    #+BEGIN_SRC emacs-lisp
@@ -304,7 +336,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     ("r" tkn/reload-config "reload")
     ("if" (find-file (concat user-emacs-directory "init.el")) "find init.el")
     ("ir" (load-file (concat user-emacs-directory "init.el")) "reload init.el"))
-  (global-set-key (kbd "C-c c") 'hydra-config/body)
+  (global-set-key (kbd "C-z c") 'hydra-config/body)
 #+END_SRC
 *** Current buffer
 #+BEGIN_SRC emacs-lisp
@@ -313,7 +345,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
       ("r" revert-buffer "revert")
       ("k" tkn/kill-current-buffer "kill")
       ("K" kill-buffer-and-window "kill with window"))
-    (global-set-key (kbd "C-c b") 'hydra-current-buffer/body)
+    (global-set-key (kbd "C-z b") 'hydra-current-buffer/body)
 #+END_SRC
 *** Hydra index
 #+BEGIN_SRC emacs-lisp
@@ -321,7 +353,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     ("s" hydra-smartparens/body "smartparens")
     ("m" hydra-multiple-cursors/body "multiple-cursors")
     ("r" hydra-rectangle/body "rectangles"))
-  (global-set-key (kbd "C-c z") 'hydra-index/body)
+  (global-set-key (kbd "C-z z") 'hydra-index/body)
 #+END_SRC
 *** multiple-cursors
 #+BEGIN_SRC emacs-lisp
@@ -367,11 +399,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     ("n" windmove-down "down")
     ("p" windmove-up "up")
     ("f" windmove-right "right"))
-  (global-set-key (kbd "C-c w") 'hydra-window/body)
-#+END_SRC
-** No sleep keys
-#+BEGIN_SRC emacs-lisp
-  (global-unset-key (kbd "C-z"))
+  (global-set-key (kbd "C-z w") 'hydra-window/body)
 #+END_SRC
 * General behaviour
 ** Backup/autosave location
