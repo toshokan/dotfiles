@@ -92,7 +92,7 @@ package initializations until after ~prog-mode~ is useless.
 #+END_SRC
 
 *** flycheck
-Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-mode~
+Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-mode~
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
@@ -216,7 +216,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
-    :bind (("C-;" . 'expand-region)))
+    :bind (("C-;" . 'er/expand-region)))
 #+END_SRC
 
 *** smartparens
@@ -247,19 +247,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (counsel-mode)
   (setq ivy-initial-inputs-alist nil)
   :bind (("C-S-s" . 'swiper)))
-  ;; (global-set-key (kbd "C-S-s") 'swiper))
-  ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  ;; (global-set-key (kbd "C-c g") 'counsel-git)
-  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  ;; (global-set-key (kbd "C-x l") 'counsel-locate)
-  ;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 #+END_SRC
 
 ** Snippets
@@ -286,6 +273,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :defer t
     :bind (("C-c g" . 'magit-status)))
 #+END_SRC
+
 *** projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -302,6 +290,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :config
     (counsel-projectile-mode))
 #+END_SRC
+
 * Mode configuration
 ** org-mode
    #+BEGIN_SRC emacs-lisp
