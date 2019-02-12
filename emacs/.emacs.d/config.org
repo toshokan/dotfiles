@@ -165,16 +165,19 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 *** Rust
-**** racer, rust-mode
+**** rust-mode, lsp
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
     :ensure t
     :defer t)
-  (use-package racer
+  (use-package lsp-mode
     :ensure t
-    :hook ((rust-mode . racer-mode)
-           (racer-mode . eldoc-mode)
-           (racer-mode . company-mode)))
+    :hook (rust-mode . lsp))
+  (use-package company-lsp
+    :ensure t)
+  (use-package lsp-ui
+    :ensure t
+    :hook (lsp-mode . lsp-ui-mode))
 #+END_SRC
 
 *** Haskell
