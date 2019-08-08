@@ -25,9 +25,8 @@ package initializations until after ~prog-mode~ is useless.
 *** Faces
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil
-                      :height 91
-                      :foundry "IBM"
-                      :family "IBM Plex Mono")
+                      :height 100
+                      :family "Iosevka")
 #+END_SRC
 
 *** Get rid of graphical prompts
@@ -56,14 +55,14 @@ package initializations until after ~prog-mode~ is useless.
 #+END_SRC
 
 *** Themes
-*** base16-tomorrow
+**** base16-tomorrow
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
     :ensure t
     :config
+    (setq base16-theme-256-color-source "colors")
     (load-theme 'base16-tomorrow-night t))
 #+END_SRC
-
 * Packages
 ** Bindings
 *** hydra
@@ -295,6 +294,10 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 * Mode configuration
+** flymake-mode
+#+BEGIN_SRC emacs-lisp
+  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+#+END_SRC
 ** org-mode
    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-mode-hook 'yas-minor-mode)
