@@ -63,6 +63,10 @@ package initializations until after ~prog-mode~ is useless.
     (setq base16-theme-256-color-source "colors")
     (load-theme 'base16-tomorrow-night t))
 #+END_SRC
+** TLS error on ~gnu~ archive
+#+BEGIN_SRC emacs-lisp
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+#+END_SRC
 * Packages
 ** Bindings
 *** hydra
@@ -177,6 +181,13 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package lsp-ui
     :ensure t
     :hook (lsp-mode . lsp-ui-mode))
+#+END_SRC
+
+*** Scala
+#+BEGIN_SRC emacs-lisp
+  (use-package scala-mode
+    :ensure t
+    :hook (scala-mode . lsp))
 #+END_SRC
 
 *** Haskell
@@ -302,6 +313,10 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
      (add-hook 'org-mode-hook 'yas-minor-mode)
      (add-hook 'org-mode-hook 'org-indent-mode)
    #+END_SRC
+** octave-mode
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+#+END_SRC
 * Functions
 ** kill-current-buffer
 #+BEGIN_SRC emacs-lisp
