@@ -23,3 +23,4 @@ assumes it is `elisp`"
 
 ;; Load all necessary configs
 (tkn/load-configs)
+(put 'dired-find-alternate-file 'disabled nil)

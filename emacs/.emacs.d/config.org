@@ -17,18 +17,28 @@ package initializations until after ~prog-mode~ is useless.
 #+BEGIN_SRC emacs-lisp
   (setq initial-major-mode 'fundamental-mode)
 #+END_SRC
+** Don't allow lines that aren't lines
+#+BEGIN_SRC emacs-lisp
+  (setq require-final-newline t)
+#+END_SRC
 ** Unbind sleep keys
 #+BEGIN_SRC emacs-lisp
   (global-unset-key (kbd "C-z"))
 #+END_SRC
 ** Visual
 *** Faces
+**** Default
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil
-                      :height 91
-                      :foundry "IBM"
-                      :family "IBM Plex Mono")
-#+END_SRC
+                      :height 100
+                      :family "Iosevka")
+ #+END_SRC
+**** Markdown code face used in lsp-sideline
+ #+BEGIN_SRC emacs-lisp
+ (with-eval-after-load "markdown-mode"
+  (set-face-attribute 'markdown-code-face nil
+		       :inherit nil))
+ #+END_SRC
 
 *** Get rid of graphical prompts
 #+BEGIN_SRC emacs-lisp
@@ -61,6 +71,7 @@ package initializations until after ~prog-mode~ is useless.
   (use-package base16-theme
     :ensure t
     :config
+    (setq base16-theme-256-color-source "colors")
     (load-theme 'base16-tomorrow-night t))
 #+END_SRC
 
@@ -170,11 +181,22 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package rust-mode
     :ensure t
     :defer t)
-  (use-package racer
+  (use-package lsp-mode
     :ensure t
-    :hook ((rust-mode . racer-mode)
-           (racer-mode . eldoc-mode)
-           (racer-mode . company-mode)))
+    :hook (rust-mode . lsp))
+  (use-package company-lsp
+    :ensure t)
+  (use-package lsp-ui
+    :ensure t
+    :hook (lsp-mode . lsp-ui-mode))
+#+END_SRC
+
+*** Scala
+**** scala-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package scala-mode
+    :ensure t
+    :hook (scala-mode . lsp))
 #+END_SRC
 
 *** Haskell
@@ -216,13 +238,16 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
-    :bind (("C-;" . 'expand-region)))
+    :bind (("C-;" . 'er/expand-region)))
 #+END_SRC
 
 *** smartparens
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :ensure t
+    :config 
+    (use-package smartparens-config)
+    (setq-default sp-escape-quotes-after-insert nil)
     :hook (prog-mode . smartparens-mode))
 #+END_SRC
 
@@ -247,19 +272,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (counsel-mode)
   (setq ivy-initial-inputs-alist nil)
   :bind (("C-S-s" . 'swiper)))
-  ;; (global-set-key (kbd "C-S-s") 'swiper))
-  ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  ;; (global-set-key (kbd "C-c g") 'counsel-git)
-  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  ;; (global-set-key (kbd "C-x l") 'counsel-locate)
-  ;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 #+END_SRC
 
 ** Snippets
@@ -286,6 +298,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :defer t
     :bind (("C-c g" . 'magit-status)))
 #+END_SRC
+
 *** projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -302,7 +315,18 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :config
     (counsel-projectile-mode))
 #+END_SRC
+
 * Mode configuration
+** cc mode
+#+BEGIN_SRC emacs-lisp
+  (setq c-default-style '((java-mode . "java")
+                         (awk-mode . "awk")
+                         (c-mode . "java")
+                         (c++-mode . "java")))
+
+  ;; Why would someone indent a template
+  (c-set-offset 'topmost-intro-cont 0 nil)
+#+END_SRC
 ** org-mode
    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-mode-hook 'yas-minor-mode)
@@ -352,7 +376,8 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (defhydra hydra-index (:color blue)
     ("s" hydra-smartparens/body "smartparens")
     ("m" hydra-multiple-cursors/body "multiple-cursors")
-    ("r" hydra-rectangle/body "rectangles"))
+    ("r" hydra-rectangle/body "rectangles")
+    ("e" hydra-lsp/body "editing"))
   (global-set-key (kbd "C-z z") 'hydra-index/body)
 #+END_SRC
 *** multiple-cursors
@@ -374,6 +399,14 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     "rectangles"
     ("s" string-rectange "string")
     ("i" string-insert-rectangle "string insert"))
+#+END_SRC
+*** lsp
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-lsp (:color blue)
+    "lsp"
+    ("d" lsp-find-definition "find definition")
+    ("i" lsp-find-implementation "find implementation")
+    ("r" lsp-find-references "find references"))
 #+END_SRC
 *** smartparens
 #+BEGIN_SRC emacs-lisp
