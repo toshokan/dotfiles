@@ -1,0 +1,37 @@
+#! /bin/bash
+
+num_mon=$(bspc query -M | wc -l)
+
+if [ $num_mon -gt 1 ]; then
+	#bspc monitor LVDS1 -n x220 -d sys tty web cur cut ssh mpx msc
+	bspc monitor LVDS-1 -n x220 -d 一 二 三 四 五 六 七 八
+	bspc monitor VGA-1 -n ext -d 一 二 三 四 五 六 七 八
+	#bspc monitor VGA1 -n ext -d sys tty web cur cut ssh mpx msc
+elif [ $num_mon -eq 1 ]; then
+	bspc monitor -d 一 二 三 四 五 六 七 八
+fi
+
+
+#bspc monitor LVDS1 -d sys tty cur
+#bspc monitor VGA1 -d cth cuf cfv
+
+bspc config border_width         2
+bspc config window_gap           4
+bspc config pointer_modifier     mod4	
+
+bspc config split_ratio          0.50
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+bspc config focus_follows_pointer true
+
+#bspc rule -a Gimp desktop='^8' state=floating follow=on
+#ibspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+bspc rule -a Zathura state=tiled
+bspc rule -a Emacs state=tiled
+
+#nohup bar_functions.rb >/dev/null & disown
+nohup ruby-bar.rb >/dev/null & disown
+
