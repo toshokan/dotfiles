@@ -1,7 +1,15 @@
-ZDOTDIR=$HOME/.config/zsh
+ZDOTDIR=${HOME}/.config/zsh
 HISTFILE=${ZDOTDIR}/histfile
 HISTSIZE=100000
 SAVEHIST=100000
+
+function source_if_exists() {
+    if [[ -f $1 ]]; then
+	source $1
+    fi
+}
+
+source_if_exists "${ZDOTDIR}/.zshenv.local"
 
 rust_path=(~/.cargo/bin)
 ruby_path=(~/.gem/ruby/2.7.0/bin)
@@ -17,13 +25,10 @@ typeset -Ux path=($env_path
 
 # Fix grey Java GUIs
 typeset -x _JAVA_AWT_WM_NONREPARENTING=1
-
 typeset -x LESSHISTFILE=-
-
-typeset -x EDITOR="emacsclient -t"
-typeset -x VISUAL="emacsclient -c"
 typeset -x ALTERNATE_EDITOR=""
 typeset -x SUDO_EDITOR=${EDITOR}
+
 E() {
     typeset -x SUDO_EDITOR=${EDITOR}
     sudoedit "${@}"
@@ -61,12 +66,10 @@ VISUAL() {
     ${=VISUAL} ${@}
 }
 
-typeset -x TERMINAL="alacritty"
 TERMINAL() {
     ${=TERMINAL} ${@}
 }
 
-typeset -x BROWSER="firefox"
 BROWSER() {
     ${=BROWSER} ${@}
 }

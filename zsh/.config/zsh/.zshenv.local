@@ -1,0 +1,12 @@
+# Add any local changes to $path
+typeset -Ux path_local=()
+
+# Set editor
+typeset -x EDITOR="emacsclient -t"
+typeset -x VISUAL="emacsclient -c"
+
+# Set other programs
+typeset -x TERMINAL="alacritty"
+typeset -x BROWSER="firefox"
+
+# Other things...

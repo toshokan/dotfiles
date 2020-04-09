@@ -39,5 +39,4 @@ grep() {
     command grep --color=auto "${@}"
 }
 
-alias wakiri="wol -v 70:85:c2:89:62:a1"
-alias wakgri="wol -v 00:1c:c4:65:f8:b3"
+source_if_exists "${ZDOTDIR}/.zshrc.local"
