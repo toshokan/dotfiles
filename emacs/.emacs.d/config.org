@@ -176,7 +176,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 *** Rust
-**** racer, rust-mode
+**** rust-mode
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
     :ensure t
