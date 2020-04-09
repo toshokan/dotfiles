@@ -20,7 +20,7 @@ XF86AudioMicMute
 
 #emoji
 super + underscore
-  bash /home/toshokan/emoji.sh
+  emoji.sh
 
 #Suspend
 XF86Sleep
@@ -96,7 +96,7 @@ super + Return
 
 # program launcher
 super + r
-	rofi -show run -disable-history -matching fuzzy
+	rofi -run-list-command "zsh_function_list.zsh" -show run -disable-history -matching fuzzy
 
 # window switcher
 super + shift + r
