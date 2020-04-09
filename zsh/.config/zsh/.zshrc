@@ -1,23 +1,3 @@
-# # Emacs Tramp Dumb Terminal
-# if [[ "$TERM" == "dumb" ]]
-# then
-#   unsetopt zle
-#   unsetopt prompt_cr
-#   unsetopt prompt_subst
-#   if whence -w precmd >/dev/null; then
-#     unfunction precmd
-#   fi
-#   if whence -w preexec >/dev/null; then
-#     unfunction preexec
-#   fi
-#   PS1="$ "
-#   return
-# fi
-
-# zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|[._-]=** r:|=**' 'l:|=* r:|=*'
-# zstyle ':completion:*' match-original both
-#End of lines added by compinstall
-
 # Emacs keys
 bindkey -e
 bindkey '^i' complete-word

@@ -1,10 +1,10 @@
 ZDOTDIR=$HOME/.config/zsh
-HISTFILE=~/.histfile
+HISTFILE=${ZDOTDIR}/histfile
 HISTSIZE=100000
 SAVEHIST=100000
 
 rust_path=(~/.cargo/bin)
-ruby_path=(~/.gem/ruby/2.6.0/bin)
+ruby_path=(~/.gem/ruby/2.7.0/bin)
 local_path=(~/.local/bin)
 env_path=(~/bin/)
 opt_path=(/opt/bin)
@@ -17,6 +17,8 @@ typeset -Ux path=($env_path
 
 # Fix grey Java GUIs
 typeset -x _JAVA_AWT_WM_NONREPARENTING=1
+
+typeset -x LESSHISTFILE=-
 
 typeset -x EDITOR="emacsclient -t"
 typeset -x VISUAL="emacsclient -c"
