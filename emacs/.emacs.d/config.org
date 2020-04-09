@@ -217,12 +217,11 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 ** Motion, Editing, and Navigation
-*** ace-jump
+*** avy
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-jump-mode
+  (use-package avy
     :ensure t
-    :bind (("C-'" . 'ace-jump-word-mode)
-           ("C-\"" . 'ace-jump-char-mode)))
+    :bind (("C-'" . 'avy-goto-char)))
 #+END_SRC
 
 *** ace-window
