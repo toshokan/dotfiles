@@ -1,6 +1,11 @@
 #!/bin/bash
 
-packages=`ls -I setup.sh`
+if [[ -z $* ]]; then
+    echo "first"
+    packages=`ls -I setup.sh`
+else
+    packages=$*
+fi
 
 do_stow() {
     stow --no-folding $1
