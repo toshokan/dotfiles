@@ -103,3 +103,7 @@ SCREENSHOT_SELECT() {
 FILE_BROWSER() {
     pcmanfm ${@}
 }
+
+fork_detach() {
+    nohup ${@} 2>/dev/null >/dev/null & disown
+}
