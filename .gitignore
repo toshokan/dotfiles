@@ -1,4 +1,5 @@
 emacs/.emacs.d/*
+zsh/.config/zsh/histfile
 ! emacs/.emacs.d/config.org
 ! emacs/.emacs.d/init.el
 ! emacs/.emacs.d/snippets
