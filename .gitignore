@@ -1,5 +1,11 @@
+# Emacs packages and transient files
 emacs/.emacs.d/*
-zsh/.config/zsh/histfile
 ! emacs/.emacs.d/config.org
 ! emacs/.emacs.d/init.el
 ! emacs/.emacs.d/snippets
+
+# zsh history
+zsh/.config/zsh/histfile
+
+# local overrides sourced by tracked configs
+**/*.local
