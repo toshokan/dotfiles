@@ -30,7 +30,7 @@ package initializations until after ~prog-mode~ is useless.
 **** Default
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil
-                      :height 100
+                      :height 90
                       :family "Iosevka")
  #+END_SRC
 **** Markdown code face used in lsp-sideline
