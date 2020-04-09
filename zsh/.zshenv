@@ -12,15 +12,14 @@ function source_if_exists() {
 source_if_exists "${ZDOTDIR}/.zshenv.local"
 
 rust_path=(~/.cargo/bin)
-ruby_path=(~/.gem/ruby/2.7.0/bin)
 local_path=(~/.local/bin)
 env_path=(~/bin/)
 opt_path=(/opt/bin)
 
 typeset -Ux path=($env_path
 	          $rust_path
-	          $ruby_path
 	          $opt_path
+		  $path_local
 	          $path)
 
 # Fix grey Java GUIs
