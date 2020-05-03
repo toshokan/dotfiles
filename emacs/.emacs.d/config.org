@@ -72,7 +72,7 @@ package initializations until after ~prog-mode~ is useless.
     :ensure t
     :config
     (setq base16-theme-256-color-source "colors")
-    (load-theme 'base16-ocean t))
+    (load-theme 'base16-tomorrow-night t))
 #+END_SRC
 
 * Packages
