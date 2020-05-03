@@ -55,9 +55,6 @@ scrolling:
   # scrollback is enabled (history > 0).
   multiplier: 3
 
-  # Scroll to the bottom when new text is written to the terminal.
-  auto_scroll: false
-
 # Spaces per Tab (changes require restart)
 #
 # This setting defines the width of a tab in cells.
@@ -147,40 +144,48 @@ debug:
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
 
-# Base16 Eighties 256 - alacritty color config
+# Base16 Ocean 256 - alacritty color config
 # Chris Kempson (http://chriskempson.com)
 colors:
   # Default colors
   primary:
-    background: '0x2d2d2d'
-    foreground: '0xd3d0c8'
+    background: '0x2b303b'
+    foreground: '0xc0c5ce'
 
   # Colors the cursor will use if `custom_cursor_colors` is true
   cursor:
-    text: '0x2d2d2d'
-    cursor: '0xd3d0c8'
+    text: '0x2b303b'
+    cursor: '0xc0c5ce'
 
   # Normal colors
   normal:
-    black:   '0x2d2d2d'
-    red:     '0xf2777a'
-    green:   '0x99cc99'
-    yellow:  '0xffcc66'
-    blue:    '0x6699cc'
-    magenta: '0xcc99cc'
-    cyan:    '0x66cccc'
-    white:   '0xd3d0c8'
+    black:   '0x2b303b'
+    red:     '0xbf616a'
+    green:   '0xa3be8c'
+    yellow:  '0xebcb8b'
+    blue:    '0x8fa1b3'
+    magenta: '0xb48ead'
+    cyan:    '0x96b5b4'
+    white:   '0xc0c5ce'
 
   # Bright colors
   bright:
-    black:   '0x747369'
-    red:     '0xf2777a'
-    green:   '0x99cc99'
-    yellow:  '0xffcc66'
-    blue:    '0x6699cc'
-    magenta: '0xcc99cc'
-    cyan:    '0x66cccc'
-    white: '0xf2f0ec'
+    black:   '0x65737e'
+    red:     '0xbf616a'
+    green:   '0xa3be8c'
+    yellow:  '0xebcb8b'
+    blue:    '0x8fa1b3'
+    magenta: '0xb48ead'
+    cyan:    '0x96b5b4'
+    white:   '0xeff1f5'
+
+  indexed_colors:
+    - { index: 16, color: '0xd08770' }
+    - { index: 17, color: '0xab7967' }
+    - { index: 18, color: '0x343d46' }
+    - { index: 19, color: '0x4f5b66' }
+    - { index: 20, color: '0xa7adba' }
+    - { index: 21, color: '0xdfe1e8' }
 
 # Visual Bell
 #
