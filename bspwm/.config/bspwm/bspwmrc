@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-source_if_exists "setup_workspaces.sh.local"
+source_if_exists "${HOME}/.config/bspwm/setup_workspaces.sh.local"
 
 bspc config border_width         2
 bspc config window_gap           4
