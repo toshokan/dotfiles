@@ -10,6 +10,10 @@
 {XF86AudioMute, button15}
 	amixer sset Master toggle
 
+$volume interactive
+super + v
+      set_volume >/dev/null
+
 #MicMt
 XF86AudioMicMute
 	amixer sset Capture toggle
@@ -22,28 +26,28 @@ XF86AudioMicMute
 super + underscore
   emoji.sh
 
-#Suspend
+# Suspend
 XF86Sleep
   $(LOCK_SUSPEND_CMD)
 
-#Lock
+# Lock
 {ctrl + alt + l, button12}
   $(SCREEN_LOCK_CMD)
 
-#pcmanfm
+# File browser
 super + e
   $(FILE_BROWSER)
 
-#firefox
+# editor
+super + shift + e
+  $(VISUAL)
+
+# Web browser
 super + shift + f
   $(BROWSER)
 
-#emacs
-XF86Launch1
-  $(VISUAL)
-
-super + shift + e
-  $(VISUAL)
+super + u; super + shift + f
+  $(BROWSER_PRIVATE)
 
 #telegram
 super + c
@@ -53,10 +57,6 @@ super + c
 super + shift + Escape
 	kill $(pidof bar_functions) ; bar_functions.rb
 
-#Usage
-super + {u, shift + u}
-	notify-send {"$(notifystat)","$(notifystat 1)"}
-
 #full scrot
 super + Print
   $(SCREENSHOT_FULLSCREEN)
@@ -64,18 +64,10 @@ super + Print
 #select scrot
 super + shift + Print
   $(SCREENSHOT_SELECT)
-  
+
 #xkill
 super + Delete
 	xkill -frame
-
-#monitor 2
-{XF86Display, XF86Favorites}
-	bspwm.rb multi-monitor | sh
-
-#single monitor
-super + {XF86Display, XF86Favorites}
-	bspwm.rb single-monitor | sh
 
 #Mouse buttons
 button9
@@ -86,6 +78,35 @@ button10
 	bspc desktop -f next
 button8
 	bspc desktop -f prev
+
+super + shift + {comma, period}
+      bspc monitor -f {"west", "east"}
+
+super + {braceleft, braceright}
+      bspc desktop -f {prev, next}
+
+super + ctrl + {h,j,k,l}
+      bspc monitor -f {"west", "south", "north", "east"}
+
+super + alt + {h,l}
+      bspc desktop -f {prev, next}
+
+super + z ; m : {_, ctrl} + {h,j,k,l}
+        bspc {node, monitor} -f {"west", "south", "north", "east"}
+
+super + z; m : shift + {h,l}
+        bspc desktop -f {prev, next}
+
+# super + z; m : ctrl + {h,j,k,l}
+#         bspc monitor -f {"west", "south", "north", "east"}
+
+super + z; a; {1,2,3}
+        bspc monitor -f {"^1", "^2", "^3"}
+
+super + z; g; {1-3}; {1-9,0}
+        bspc desktop -f '^{1-3}':'^{1-9,10}'
+
+
 #
 # wm independent hotkeys
 #
@@ -96,7 +117,7 @@ super + Return
 
 # program launcher
 super + r
-	rofi -run-list-command "zsh_function_list.zsh" -show run -disable-history -matching fuzzy
+	rofi -show run -disable-history -matching fuzzy
 
 # window switcher
 super + shift + r
@@ -133,19 +154,6 @@ super + m
 # swap the current node and the biggest node
 super + g
 	bspc node -s biggest.local
-
-# goto
-super + shift + g ; {1-9,0}
-        bspc desktop -f focused:'^{1-9,10}'
-
-super + z ; m : {h,j,k,l}
-      bspc node -f {"west", "south", "north", "east"}
-
-super + z ; m : shift + {h,l}
-      bspc desktop -f {prev, next}
-
-super + z ; m : ctrl + {h,j,k,l}
-      bspc monitor -f {"west", "south", "north", "east"}
 
 #
 # state/flags
@@ -193,9 +201,15 @@ super + {o,i}
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} focused:'^{1-9,10}'
 
-# monitor 2: focus or send to the given desktop
+monitor left: focus or send to the given desktop
 super + control + {_,shift + }{1-9,0}
-        bspc {desktop -f,node -d} next:'^{1-9,10}'
+        bspc {desktop -f,node -d} left:'^{1-9,10}'
+
+super + alt + {_,shift + }{1-9,0}
+        bspc {desktop -f,node -d} right:'^{1-9,10}'
+
+super + control + alt + {_,shift + }{1-9,0}
+        bspc {desktop -f,node -d} main:'^{1-9,10}'
 
 
 
