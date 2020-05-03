@@ -1,5 +1,6 @@
-rofi.font: Kochi Gothic 11
+rofi.font: Iosevka 11
 rofi.terminal: ${TERMINAL}
 rofi.run-command: zsh -c '{cmd}'
 
 xft.dpi: 125
+Xcursor.size: 8
