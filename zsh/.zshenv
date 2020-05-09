@@ -75,6 +75,10 @@ BROWSER() {
     ${=BROWSER} ${@}
 }
 
+BROWSER_PRIVATE() {
+    ${=BROWSER} --private-window ${@}
+}
+
 EMAIL() {
     thunderbird ${@}
 }
