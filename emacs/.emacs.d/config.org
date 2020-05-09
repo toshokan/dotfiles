@@ -183,6 +183,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :defer t)
   (use-package lsp-mode
     :ensure t
+    :config (setq lsp-rust-server 'rust-analyzer)
     :hook (rust-mode . lsp))
   (use-package company-lsp
     :ensure t)
