@@ -1,0 +1,31 @@
+#!/bin/sh
+
+OUTPUT="Master"
+
+OPTION=$(echo -e "mute
+0% mute
+0%
+10%
+25%
+35%
+50%
+75%
+85%
+90%
+100%" | rofi -dmenu -p "Volume?")
+
+case $OPTION in
+    "mute")
+	amixer sset $OUTPUT off
+	;;
+    "0% mute")
+	amixer sset $OUTPUT "0%" off
+	;;
+    *)
+	amixer sset $OUTPUT $OPTION on
+	;;
+esac
+    
+       
+	    
+
