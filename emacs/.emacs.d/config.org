@@ -165,7 +165,8 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     (setq TeX-auto-save t
           TeX-parse-self t
           TeX-view-program-selection '((output-pdf "PDF Tools"))
-          TeX-source-correlate-start-server t)
+          TeX-source-correlate-start-server t
+          LaTeX-beamer-item-overlay-flag nil)
     (setq-default TeX-master nil
                   TeX-engine 'luatex)
     (add-hook 'TeX-after-compilation-finished-functions 
