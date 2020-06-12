@@ -8,6 +8,9 @@ xset s 3600 3600
 xset dpms 3600 3600 3600
 eval `dbus-launch --sh-syntax`
 
+eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+export SSH_AUTH_SOCK
+
 setxkbmap -option caps:escape
 setxkbmap -option button9:Back
 setxkbmap -option button11:Forward
