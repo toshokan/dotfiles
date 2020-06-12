@@ -29,6 +29,7 @@ typeset -x GTK2_RC_FILES="${HOME}/.config/.gtkrc-2.0"
 typeset -x LESSHISTFILE=-
 typeset -x ALTERNATE_EDITOR=""
 typeset -x SUDO_EDITOR=${EDITOR}
+typeset -x GPG_TTY=$(tty)
 
 E() {
     typeset -x SUDO_EDITOR=${EDITOR}

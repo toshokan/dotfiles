@@ -1,5 +1,8 @@
 [user]
 	name = toshokan
 	email = toshokan@shojigate.net
+	signingkey = B8EA4458467C82D9
 [status]
 	showUntrackedFiles = all
+[commit]
+	gpgsign = true
