@@ -6,6 +6,7 @@ emacs/.emacs.d/*
 
 # zsh history
 zsh/.config/zsh/histfile
+zsh/.config/zsh/.zcompdump
 
 # local overrides sourced by tracked configs
 **/*.local
