@@ -155,6 +155,21 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
+*** JS/TS
+**** rjsx-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package rjsx-mode
+    :ensure t
+    :defer t
+    :mode ("\\.jsx?$" "\\.tsx?$"))
+#+END_SRC
+**** prettier
+#+BEGIN_SRC emacs-lisp
+  (use-package prettier-js
+    :ensure t
+    :defer t
+    :hook rjsx-mode)
+#+END_SRC
 *** LaTeX
 **** AUCTeX
 #+BEGIN_SRC emacs-lisp
