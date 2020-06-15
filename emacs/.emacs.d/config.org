@@ -98,7 +98,8 @@ package initializations until after ~prog-mode~ is useless.
     :ensure t
     :hook (prog-mode . company-mode)
     :config
-    (setq company-idle-delay 0
+    (setq company-dabbrev-downcase nil
+          company-idle-delay 0
           company-minimum-prefix-length 2))
 #+END_SRC
 
