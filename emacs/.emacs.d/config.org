@@ -171,7 +171,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package prettier-js
     :ensure t
     :defer t
-    :hook rjsx-mode)
+    :hook (rjsx-mode . prettier-js-mode))
 #+END_SRC
 *** LaTeX
 **** AUCTeX
