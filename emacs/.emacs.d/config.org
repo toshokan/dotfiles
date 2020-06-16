@@ -162,7 +162,9 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package rjsx-mode
     :ensure t
     :defer t
-    :mode ("\\.jsx?$" "\\.tsx?$"))
+    :mode ("\\.jsx?$" "\\.tsx?$")
+    :config (setq js2-basic-offset 2
+                  js2-strict-missing-semi-warning nil))
 #+END_SRC
 **** prettier
 #+BEGIN_SRC emacs-lisp
