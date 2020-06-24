@@ -19,6 +19,8 @@ xsetroot -cursor_name left_ptr
 # background
 xsetroot -bg "#2c1a30" -fg "#200c25" -mod 5 5
 
+redshift &
+
 source_if_exists "${HOME}/env/scripts/X/setup_inputs.sh.local"
 source_if_exists "${HOME}/env/scripts/X/setup_x.sh.local"
 
