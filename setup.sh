@@ -1,8 +1,7 @@
 #!/bin/bash
 
 if [[ -z $* ]]; then
-    echo "first"
-    packages=`ls -I setup.sh`
+    packages=`ls -I setup.sh -I README.md`
 else
     packages=$*
 fi
