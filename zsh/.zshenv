@@ -112,3 +112,7 @@ FILE_BROWSER() {
 fork_detach() {
     nohup ${@} 2>/dev/null >/dev/null & disown
 }
+
+rewd() {
+    cd $(pwd)
+}
