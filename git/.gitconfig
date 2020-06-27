@@ -6,5 +6,3 @@
 	showUntrackedFiles = all
 [commit]
 	gpgsign = true
-[merge]
-	ff = false
