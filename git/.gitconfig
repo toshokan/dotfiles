@@ -6,3 +6,5 @@
 	showUntrackedFiles = all
 [commit]
 	gpgsign = true
+[tag]
+	forceSignAnnotated = true
