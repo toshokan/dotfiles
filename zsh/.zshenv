@@ -85,7 +85,7 @@ EMAIL() {
 }
 
 SCREEN_LOCK_CMD() {
-    physlock -md
+    spookylock
 }
 
 SUSPEND_CMD() {
