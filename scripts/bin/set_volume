@@ -16,7 +16,7 @@ OPTION=$(echo -e "mute
 
 case $OPTION in
     "mute")
-	amixer sset $OUTPUT off
+	amixer sset $OUTPUT toggle
 	;;
     "0% mute")
 	amixer sset $OUTPUT "0%" off
