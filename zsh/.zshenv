@@ -26,6 +26,7 @@ typeset -Ux path=($env_path
 typeset -x _JAVA_AWT_WM_NONREPARENTING=1
 
 typeset -x GTK2_RC_FILES="${HOME}/.config/.gtkrc-2.0"
+typeset -x QT_QPA_PLATFORMTHEME=gtk3
 typeset -x LESSHISTFILE=-
 typeset -x ALTERNATE_EDITOR=""
 typeset -x SUDO_EDITOR=${EDITOR}
