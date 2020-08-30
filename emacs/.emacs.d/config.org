@@ -26,6 +26,11 @@ package initializations until after ~prog-mode~ is useless.
   (global-unset-key (kbd "C-z"))
 #+END_SRC
 ** Visual
+*** Terminal Configuration
+Without this, there is a delay when making a tty frame with `emacsclient -t`.
+#+BEGIN_SRC emacs-lisp
+  (setq xterm-extra-capabilities nil)
+#+END_SRC
 *** Faces
 **** Default
 #+BEGIN_SRC emacs-lisp
