@@ -391,6 +391,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     ("f" tkn/find-config "find")
     ("r" tkn/reload-config "reload")
     ("if" (find-file (concat user-emacs-directory "init.el")) "find init.el")
+    ("of" (counsel-find-file (concat user-emacs-directory "org")) "find other configuration")
     ("ir" (load-file (concat user-emacs-directory "init.el")) "reload init.el"))
   (global-set-key (kbd "C-z c") 'hydra-config/body)
 #+END_SRC
