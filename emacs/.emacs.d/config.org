@@ -386,13 +386,11 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 
 * Miscellaneous Bindings
 ** Windmove
-Change windows with arrow modified arrow keys
 #+BEGIN_SRC emacs-lisp
-  (windmove-default-keybindings)
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right)
+  (global-set-key (kbd "C-S-h") 'windmove-left)
+  (global-set-key (kbd "C-S-j") 'windmove-down)
+  (global-set-key (kbd "C-S-k") 'windmove-up)
+  (global-set-key (kbd "C-S-l") 'windmove-right)
 #+END_SRC
 ** Hydras
 *** Configuration
