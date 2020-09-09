@@ -476,6 +476,19 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     ("f" windmove-right "right"))
   (global-set-key (kbd "C-z w") 'hydra-window/body)
 #+END_SRC
+*** Tabs
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-tabs ()
+    "tab motion"
+    ("c" tab-bar-new-tab "create" :color blue)
+    ("x" tab-bar-close-tab "close" :color blue)
+    ("n" tab-bar-switch-to-next-tab "next" :color blue)
+    ("p" tab-bar-switch-to-prev-tab "prev" :color blue)
+    ("g" tab-bar-switch-to-tab "goto" :color blue)
+    ("rt" tab-bar-rename-tab "rename" :color blue)
+    ("r" tab-bar-switch-to-recent-tab "recent" :color blue))
+  (global-set-key (kbd "C-z t") 'hydra-tabs/body)
+#+END_SRC
 * General behaviour
 ** Backup/autosave location
 #+BEGIN_SRC emacs-lisp
