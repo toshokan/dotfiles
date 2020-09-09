@@ -367,11 +367,21 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
      (add-hook 'org-mode-hook (lambda () (require 'org-tempo)))
    #+END_SRC
 * Functions
-** kill-current-buffer
+** Buffer management
 #+BEGIN_SRC emacs-lisp
   (defun tkn/kill-current-buffer ()
     (interactive)
     (kill-buffer (current-buffer)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun tkn/clean-open-buffers ()
+    (interactive)
+    (mapc (lambda (buffer)
+            (let ((name (buffer-name buffer)))
+              (unless (or (string-equal "*scratch*" name)
+                          (string-equal "*Messages*" name))
+                (kill-buffer buffer)))) (buffer-list)))
 #+END_SRC
 
 ** edit/view configuration
