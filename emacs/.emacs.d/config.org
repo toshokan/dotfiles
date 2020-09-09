@@ -385,6 +385,15 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 * Miscellaneous Bindings
+** Windmove
+Change windows with arrow modified arrow keys
+#+BEGIN_SRC emacs-lisp
+  (windmove-default-keybindings)
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
+#+END_SRC
 ** Hydras
 *** Configuration
 #+BEGIN_SRC emacs-lisp
