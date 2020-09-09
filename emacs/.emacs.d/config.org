@@ -416,12 +416,13 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 *** Current buffer
 #+BEGIN_SRC emacs-lisp
-    (defhydra hydra-current-buffer (:color blue)
-      "current buffer"
-      ("r" revert-buffer "revert")
-      ("k" tkn/kill-current-buffer "kill")
-      ("K" kill-buffer-and-window "kill with window"))
-    (global-set-key (kbd "C-z b") 'hydra-current-buffer/body)
+  (defhydra hydra-buffer (:color blue)
+    "current buffer"
+    ("r" revert-buffer "revert")
+    ("c" tkn/clean-open-buffers "clean up")
+    ("k" tkn/kill-current-buffer "kill")
+    ("K" kill-buffer-and-window "kill with window"))
+  (global-set-key (kbd "C-z b") 'hydra-buffer/body)
 #+END_SRC
 *** Hydra index
 #+BEGIN_SRC emacs-lisp
