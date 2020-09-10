@@ -381,7 +381,9 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
             (let ((name (buffer-name buffer)))
               (unless (or (string-equal "*scratch*" name)
                           (string-equal "*Messages*" name))
-                (kill-buffer buffer)))) (buffer-list)))
+                (kill-buffer buffer)))) (buffer-list))
+    (delete-other-windows)
+    (switch-to-buffer "*scratch*"))
 #+END_SRC
 
 ** edit/view configuration
