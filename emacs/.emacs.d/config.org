@@ -347,6 +347,16 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :config
     (counsel-projectile-mode))
 #+END_SRC
+*** agenda
+Get notifications for items in the org agenda
+#+BEGIN_SRC emacs-lisp
+  (use-package org-alert
+    :ensure t
+    :config
+    (setq org-alert-interval 60
+          alert-default-style 'libnotify)
+    (org-alert-enable))
+#+END_SRC
 
 * Mode configuration
 ** cc mode
