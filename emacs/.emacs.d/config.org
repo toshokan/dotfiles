@@ -369,7 +369,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** Agenda
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files '("~/Media/sync/org/agenda"))
-  (global-set-key (kbd "C-c a") 'org-agenda)
 #+END_SRC
 * Functions
 ** Buffer management
@@ -506,6 +505,14 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     ("R" tab-bar-rename-tab "rename" :color blue)
     ("r" tab-bar-switch-to-recent-tab "recent" :color blue))
   (global-set-key (kbd "C-z t") 'hydra-tabs/body)
+#+END_SRC
+*** Agenda
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-agenda ()
+    "Agenda operations"
+    ("a" org-agenda "open agenda" :color blue)
+    ("f" (counsel-find-file "~/Media/sync/org/agenda") "find" :color blue))
+  (global-set-key (kbd "C-z a") 'hydra-agenda/body)
 #+END_SRC
 * General behaviour
 ** Backup/autosave location
