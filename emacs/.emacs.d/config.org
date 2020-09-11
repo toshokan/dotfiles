@@ -366,6 +366,11 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
      (add-hook 'org-mode-hook 'flyspell-mode)
      (add-hook 'org-mode-hook (lambda () (require 'org-tempo)))
    #+END_SRC
+*** Agenda
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files '("~/Media/sync/org/agenda"))
+  (global-set-key (kbd "C-c a") 'org-agenda)
+#+END_SRC
 * Functions
 ** Buffer management
 #+BEGIN_SRC emacs-lisp
