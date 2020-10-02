@@ -9,7 +9,7 @@ the user's Emacs directory"
   (concat
    (expand-file-name user-emacs-directory) rel-name))
 
-(defvar tkn/conf-list (sort (file-expand-wildcards (tkn/emacs-d-filename "*.org")) '<)
+(defvar tkn/conf-list (sort (file-expand-wildcards (tkn/emacs-d-filename "*.org")) 'string<)
   "A list of config files to be sourced.")
 
 (defun tkn/org-babel-load-file (file)
