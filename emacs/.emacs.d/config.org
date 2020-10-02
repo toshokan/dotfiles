@@ -366,10 +366,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
      (add-hook 'org-mode-hook 'flyspell-mode)
      (add-hook 'org-mode-hook (lambda () (require 'org-tempo)))
    #+END_SRC
-*** Agenda
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files '("~/Media/sync/org/agenda"))
-#+END_SRC
+
 * Functions
 ** Buffer management
 #+BEGIN_SRC emacs-lisp
@@ -511,7 +508,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (defhydra hydra-agenda ()
     "Agenda operations"
     ("a" org-agenda "open agenda" :color blue)
-    ("f" (counsel-find-file "~/Media/sync/org/agenda") "find" :color blue))
+    ("f" (counsel-find-file (car org-agenda-files)) "find" :color blue))
   (global-set-key (kbd "C-z a") 'hydra-agenda/body)
 #+END_SRC
 * General behaviour
