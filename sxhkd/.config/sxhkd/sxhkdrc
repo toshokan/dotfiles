@@ -32,7 +32,8 @@ XF86Sleep
 
 # Lock
 {ctrl + alt + l, button12}
-  $(SCREEN_LOCK_CMD)
+  sudo /home/toshokan/test.sh
+  #$(SCREEN_LOCK_CMD)
 
 # File browser
 super + e

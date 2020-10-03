@@ -134,6 +134,19 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 ** Language and Filetype Support
+*** LSP
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :config (setq lsp-rust-server 'rust-analyzer)
+    :hook ((rust-mode . lsp)
+           (java-mode . lsp)))
+  (use-package company-lsp
+    :ensure t)
+  (use-package lsp-ui
+    :ensure t
+    :hook (lsp-mode . lsp-ui-mode))
+#+END_SRC
 *** C/C++
 **** irony
 #+BEGIN_SRC emacs-lisp
@@ -161,6 +174,21 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
+*** Java
+**** Formatting
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'java-mode-hook (lambda ()
+                              (setq c-basic-offset 4
+                                    tab-width 4
+                                    indent-tabs-mode t)))
+#+END_SRC
+**** lsp-java
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-java
+    :ensure t
+    :defer t
+    :config (setq lsp-java-format-on-type-enabled nil))
+#+END_SRC
 *** JS/TS
 **** rjsx-mode
 #+BEGIN_SRC emacs-lisp
@@ -205,17 +233,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package rust-mode
     :ensure t
     :defer t)
-  (use-package lsp-mode
-    :ensure t
-    :config (setq lsp-rust-server 'rust-analyzer)
-    :hook (rust-mode . lsp))
-  (use-package company-lsp
-    :ensure t)
-  (use-package lsp-ui
-    :ensure t
-    :hook (lsp-mode . lsp-ui-mode))
 #+END_SRC
-
 *** Scala
 **** scala-mode
 #+BEGIN_SRC emacs-lisp
@@ -376,15 +394,16 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (defun tkn/clean-open-buffers ()
+  (defun tkn/clean-open-buffers (&optional keep)
     (interactive)
     (mapc (lambda (buffer)
             (let ((name (buffer-name buffer)))
               (unless (or (string-equal "*scratch*" name)
-                          (string-equal "*Messages*" name))
+                          (string-equal "*Messages*" name)
+                          (eq buffer keep))
                 (kill-buffer buffer)))) (buffer-list))
     (delete-other-windows)
-    (switch-to-buffer "*scratch*"))
+    (switch-to-buffer (or keep "*scratch*")))
 #+END_SRC
 
 ** edit/view configuration
