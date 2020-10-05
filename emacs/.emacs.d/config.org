@@ -415,6 +415,13 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     (interactive)
     (tkn/load-configs))
 #+END_SRC
+** Load favourite
+#+BEGIN_SRC emacs-lisp
+  (defun tkn/find-favourite ()
+    (interactive)
+    (let ((file (ivy-read "Favourite: " tkn/favourites-list)))
+      (find-file file)))
+#+END_SRC
 
 * Miscellaneous Bindings
 ** Windmove
@@ -452,7 +459,8 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     ("s" hydra-smartparens/body "smartparens")
     ("m" hydra-multiple-cursors/body "multiple-cursors")
     ("r" hydra-rectangle/body "rectangles")
-    ("e" hydra-lsp/body "editing"))
+    ("e" hydra-lsp/body "editing")
+    ("f" tkn/find-favourite "favourite"))
   (global-set-key (kbd "C-z z") 'hydra-index/body)
 #+END_SRC
 *** multiple-cursors
