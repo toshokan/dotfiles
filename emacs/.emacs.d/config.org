@@ -150,13 +150,10 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** C/C++
 **** irony
 #+BEGIN_SRC emacs-lisp
-  (use-package irony
+  (use-package ccls
     :ensure t
-    :hook ((c-mode . irony-mode)
-           (c++-mode . irony-mode)
-           (irony-mode . irony-cdb-autosetup-compile-options))
-    :config
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+    :hook ((c-mode . lsp) 
+           (c++-mode . irony-mode)))
 #+END_SRC
 
 *** Clojure
