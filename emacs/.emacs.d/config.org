@@ -229,6 +229,12 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :defer t
     :ensure t)
 #+END_SRC
+*** OCaml
+#+BEGIN_SRC emacs-lisp
+  (use-package tuareg
+    :ensure t
+    :defer t)
+#+END_SRC
 *** Python
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-python-ms
