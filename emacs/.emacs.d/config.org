@@ -17,6 +17,10 @@ package initializations until after ~prog-mode~ is useless.
 #+BEGIN_SRC emacs-lisp
   (setq initial-major-mode 'fundamental-mode)
 #+END_SRC
+** Don't use tabs for indentation
+#+BEGIN_SRC emacs-lisp
+  (setq indent-tabs-mode nil)
+#+END_SRC
 ** Don't allow lines that aren't lines
 #+BEGIN_SRC emacs-lisp
   (setq require-final-newline t)
