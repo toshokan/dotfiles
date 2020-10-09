@@ -148,12 +148,12 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (lsp-mode . lsp-ui-mode))
 #+END_SRC
 *** C/C++
-**** irony
+**** ccls
 #+BEGIN_SRC emacs-lisp
   (use-package ccls
     :ensure t
     :hook ((c-mode . lsp) 
-           (c++-mode . irony-mode)))
+           (c++-mode . lsp)))
 #+END_SRC
 
 *** Clojure
