@@ -144,7 +144,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :ensure t
     :config (setq lsp-rust-server 'rust-analyzer)
     :hook ((rust-mode . lsp)
-           (java-mode . lsp)))
+           (java-mode . tkn/lsp-if-in-workspace)))
   (use-package company-lsp
     :ensure t)
   (use-package lsp-ui
@@ -159,7 +159,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :hook ((c-mode c++-mode) .
            (lambda ()
              (require 'ccls)
-             (lsp))))
+             (tkn/lsp-if-in-workspace))))
 #+END_SRC
 
 *** Clojure
@@ -237,12 +237,12 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 *** Python
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-python-ms
-  :ensure t
-  :init (setq lsp-python-ms-auto-install-server t)
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))
+  (use-package lsp-python-ms
+    :ensure t
+    :init (setq lsp-python-ms-auto-install-server t)
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-python-ms)
+                            (tkn/lsp-if-in-workspace))))
 #+END_SRC
 *** Rust
 **** rust-mode
@@ -439,7 +439,18 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     (let ((file (ivy-read "Favourite: " tkn/favourites-list)))
       (find-file file)))
 #+END_SRC
-
+** Helpers
+*** lsp
+Lots of files aren't in project workspaces. I don't want to launch
+lsp-mode for them, even if only to add them to the "ignore
+list". Instead, I'll explicitly add workspaces I _do_ want lsp-mode to
+run in.
+#+BEGIN_SRC emacs-lisp
+  (defun tkn/lsp-if-in-workspace ()
+    (interactive)
+    (when (lsp-workspace-root)
+      (lsp)))
+#+END_SRC
 * Miscellaneous Bindings
 ** Windmove
 #+BEGIN_SRC emacs-lisp
