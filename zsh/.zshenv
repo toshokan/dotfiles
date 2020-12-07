@@ -58,6 +58,17 @@ v() {
     VISUAL ${@}
 }
 
+unzipdir() {
+    unzip -d ${1%%.zip} $1
+}
+
+eph() {
+    tmpdir=$(mktemp -d --suffix=".eph")
+    ${=SHELL} -c "cd ${tmpdir}; exec ${SHELL}"
+    echo "Are you sure you want to clear ${tmpdir}?"
+    rm -rf -I ${tmpdir}
+}
+
 kt() {
     killall Telegram 2>&1 >/dev/null
 }
