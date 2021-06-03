@@ -1,3 +1,4 @@
+source /etc/profile
 source ~/.zshenv 
 if [[ -n "$SSH_CONNECTION" ]]
 then
