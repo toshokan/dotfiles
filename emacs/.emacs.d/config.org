@@ -8,6 +8,12 @@ packages can be installed.
     (package-refresh-contents)
     (package-install 'use-package))
 #+END_SRC
+** Disable interlocking
+Interlocking interferes with many file watchers, notably webpack.
+Ideally I should get around to changing the locking implementation to allow putting the lockfiles somewhere else...
+#+BEGIN_SRC emacs-lisp
+(setq create-lockfiles nil)
+#+END_SRC
 
 * General Configuration 
 ** Change ~*scratch*~ major mode
