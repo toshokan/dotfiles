@@ -18,4 +18,4 @@ bspc rule -a Screenkey manage=off
 bspc rule -a Zathura state=tiled
 bspc rule -a Emacs state=tiled
 
-fork_detach ruby-bar.rb
+fork_detach bergamot-panel.sh
