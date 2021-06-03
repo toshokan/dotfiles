@@ -6,7 +6,9 @@ source_if_exists "${HOME}/env/scripts/X/setup_monitors.sh.local"
 xrdb ~/.Xresources
 xset s 3600 3600
 xset dpms 3600 3600 3600
-eval `dbus-launch --sh-syntax`
+
+# dbus
+eval `dbus-launch --sh-syntax --exit-with-x11`
 
 eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
 export SSH_AUTH_SOCK
@@ -27,7 +29,6 @@ source_if_exists "${HOME}/env/scripts/X/setup_x.sh.local"
 sxhkd &
 
 # Notifications
-dunst &
+# dunst &
 
-
-exec dbus-launch --sh-syntax --exit-with-session bspwm
+exec bspwm
