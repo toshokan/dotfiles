@@ -194,12 +194,17 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :config (setq lsp-java-format-on-type-enabled nil))
 #+END_SRC
 *** JS/TS
+**** Formatting
+#+BEGIN_SRC emacs-lisp
+  (setq js-indent-level 2
+        typescript-indent-level 2)
+#+END_SRC
 **** rjsx-mode
 #+BEGIN_SRC emacs-lisp
   (use-package rjsx-mode
     :ensure t
     :defer t
-    :mode ("\\.jsx?$" "\\.tsx?$")
+    :mode ("\\.jsx$" "\\.tsx$")
     :config (setq js2-basic-offset 2
                   js2-strict-missing-semi-warning nil))
 #+END_SRC
@@ -209,6 +214,19 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :ensure t
     :defer t
     :hook (rjsx-mode . prettier-js-mode))
+#+END_SRC
+**** Vue
+#+BEGIN_SRC emacs-lisp
+  (use-package vue-mode
+    :ensure t
+    :defer t
+    :hook (mmm-mode . (lambda () (set-face-background 'mmm-default-submode-face nil))))
+#+END_SRC
+**** Typescript
+#+BEGIN_SRC emacs-lisp
+  (use-package typescript-mode
+    :ensure t
+    :defer t)
 #+END_SRC
 *** LaTeX
 **** AUCTeX
