@@ -150,7 +150,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :ensure t
     :config (setq lsp-rust-server 'rust-analyzer)
     :hook ((rust-mode . lsp)
-           (enh-ruby-mode . lsp)
            (java-mode . tkn/lsp-if-in-workspace)))
   (use-package company-lsp
     :ensure t)
@@ -268,6 +267,14 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (python-mode . (lambda ()
                             (require 'lsp-python-ms)
                             (tkn/lsp-if-in-workspace))))
+#+END_SRC
+*** Ruby
+#+BEGIN_SRC emacs-lisp
+  (use-package enh-ruby-mode
+    :ensure t
+    :hook ((ruby-mode . enh-ruby-mode)
+           (enh-ruby-mode . lsp)))
+
 #+END_SRC
 *** Rust
 **** rust-mode
