@@ -61,6 +61,10 @@ super + shift + Escape
 super + Print
   $(SCREENSHOT_FULLSCREEN)
 
+#select scrot clip
+super + ctrl + shift + Print
+  sleep 0.2s ; scrot -s "$(mktemp -u).png" -e 'xclip -selection clipboard -t image/png -i $f ; rm $f'
+
 #select scrot
 super + shift + Print
   $(SCREENSHOT_SELECT)
