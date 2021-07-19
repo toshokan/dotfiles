@@ -89,7 +89,24 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     (setq base16-theme-256-color-source "colors")
     (load-theme 'base16-tomorrow-night t))
 #+END_SRC
-
+*** Tabs
+#+BEGIN_SRC emacs-lisp
+  (tab-bar-mode 1)
+  (setq tab-bar-show 1)
+  (set-face-attribute 'tab-bar nil
+                      :inherit 'mode-line
+                      :foreground 'unspecified
+                      :background 'unspecified)
+  (set-face-attribute 'tab-bar-tab nil
+                      :inherit 'mode-line-highlight
+                      :foreground 'unspecified
+                      :background 'unspecified)
+  (set-face-attribute 'tab-bar-tab-inactive nil
+                      :inherit 'mode-line-inactive
+                      :foreground 'unspecified
+                      :background 'unspecified)
+  (setq tab-bar-close-button-show ni)
+#+END_SRC
 * Packages
 ** Bindings
 *** hydra
