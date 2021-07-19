@@ -248,7 +248,8 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package typescript-mode
     :ensure t
-    :defer t)
+    :defer t
+    :hook (typescript-mode . tkn/lsp-if-in-workspace))
 #+END_SRC
 *** LaTeX
 **** AUCTeX
