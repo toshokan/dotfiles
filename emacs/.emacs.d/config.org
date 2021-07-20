@@ -105,7 +105,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                       :inherit 'mode-line-inactive
                       :foreground 'unspecified
                       :background 'unspecified)
-  (setq tab-bar-close-button-show ni)
+  (setq tab-bar-close-button-show nil)
 #+END_SRC
 * Packages
 ** Bindings
