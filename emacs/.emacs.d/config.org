@@ -1,12 +1,14 @@
 * Early Startup Tasks
 ** Ensure we can load packages
+*** straight
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
 *** use-package
 Ensure that ~use-package~ is always pulled in so that the rest of the
 packages can be installed.
 #+BEGIN_SRC emacs-lisp
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
 #+END_SRC
 ** Disable interlocking
 Interlocking interferes with many file watchers, notably webpack.
@@ -84,7 +86,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** base16-tomorrow
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
-    :ensure t
     :config
     (setq base16-theme-256-color-source "colors")
     (load-theme 'base16-tomorrow-night t))
@@ -110,14 +111,12 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 ** Bindings
 *** hydra
 #+BEGIN_SRC emacs-lisp
-  (use-package hydra
-    :ensure t)
+  (use-package hydra)
 #+END_SRC
 
 *** which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
-    :ensure t
     :config
     (which-key-mode))
 #+END_SRC
@@ -126,7 +125,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** company
 #+BEGIN_SRC emacs-lisp
   (use-package company
-    :ensure t
     :hook (prog-mode . company-mode)
     :config
     (setq company-dabbrev-downcase nil
@@ -138,7 +136,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-mode~
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
-    :ensure t
     :hook (prog-mode . flycheck-mode)
     :config
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
@@ -148,36 +145,29 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :defer t
-    :ensure t
     :config)
   (use-package lsp-ui
     :defer t
-    :ensure t
     :config)
   (use-package company-lsp
-    :defer t
-    :ensure t)
+    :defer t)
 #+END_SRC
 
 ** Language and Filetype Support
 *** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :ensure t
     :config (setq lsp-rust-server 'rust-analyzer)
     :hook ((rust-mode . lsp)
            (java-mode . tkn/lsp-if-in-workspace)))
-  (use-package company-lsp
-    :ensure t)
+  (use-package company-lsp)
   (use-package lsp-ui
-    :ensure t
     :hook (lsp-mode . lsp-ui-mode))
 #+END_SRC
 *** C/C++
 **** ccls
 #+BEGIN_SRC emacs-lisp
   (use-package ccls
-    :ensure t
     :hook ((c-mode c++-mode) .
            (lambda ()
              (require 'ccls)
@@ -188,14 +178,12 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 **** cider
 #+BEGIN_SRC emacs-lisp
   (use-package cider
-    :ensure t
     :defer t)
 #+END_SRC
 
 **** rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-    :ensure t
     :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
@@ -210,7 +198,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 **** lsp-java
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-java
-    :ensure t
     :defer t
     :config (setq lsp-java-format-on-type-enabled nil))
 #+END_SRC
@@ -223,7 +210,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 **** rjsx-mode
 #+BEGIN_SRC emacs-lisp
   (use-package rjsx-mode
-    :ensure t
     :defer t
     :mode ("\\.jsx$" "\\.tsx$")
     :config (setq js2-basic-offset 2
@@ -232,30 +218,26 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 **** prettier
 #+BEGIN_SRC emacs-lisp
   (use-package prettier-js
-    :ensure t
     :defer t
     :hook (rjsx-mode . prettier-js-mode))
 #+END_SRC
 **** Vue
 #+BEGIN_SRC emacs-lisp
   (use-package vue-mode
-    :ensure t
     :defer t
     :hook (mmm-mode . (lambda () (set-face-background 'mmm-default-submode-face nil))))
 #+END_SRC
 **** Typescript
 #+BEGIN_SRC emacs-lisp
   (use-package typescript-mode
-    :ensure t
     :defer t
     :hook (typescript-mode . tkn/lsp-if-in-workspace))
 #+END_SRC
 *** LaTeX
 **** AUCTeX
 #+BEGIN_SRC emacs-lisp
-  (use-package latex
+  (use-package auctex
     :defer t
-    :ensure auctex
     :config
     (setq TeX-auto-save t
           TeX-parse-self t
@@ -267,19 +249,16 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     (add-hook 'TeX-after-compilation-finished-functions 
               'TeX-revert-document-buffer))
   (use-package company-auctex
-    :defer t
-    :ensure t)
+    :defer t)
 #+END_SRC
 *** OCaml
 #+BEGIN_SRC emacs-lisp
   (use-package tuareg
-    :ensure t
     :defer t)
 #+END_SRC
 *** Python
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-python-ms
-    :ensure t
     :init (setq lsp-python-ms-auto-install-server t)
     :hook (python-mode . (lambda ()
                             (require 'lsp-python-ms)
@@ -288,7 +267,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** Ruby
 #+BEGIN_SRC emacs-lisp
   (use-package enh-ruby-mode
-    :ensure t
     :config (setq lsp-solargraph-diagnostics nil
                   lsp-solargraph-use-bundler t)
     :hook ((ruby-mode . enh-ruby-mode)
@@ -299,22 +277,19 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 **** rust-mode
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
-    :ensure t
     :defer t)
 #+END_SRC
 *** Scala
 **** scala-mode
 #+BEGIN_SRC emacs-lisp
   (use-package scala-mode
-    :ensure t
     :hook (scala-mode . lsp))
 #+END_SRC
 
 *** Haskell
 **** haskell-mode
 #+BEGIN_SRC emacs-lisp
-  (use-package haskell-mode
-    :ensure t)
+  (use-package haskell-mode)
 #+END_SRC
 
 *** PDF
@@ -322,14 +297,12 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
     :defer t
-    :ensure t
     :config
     (pdf-tools-install))
 #+END_SRC
 *** TOML
 #+BEGIN_SRC emacs-lisp
   (use-package conf-mode
-    :ensure t
     :demand t 
     :config (add-hook 'conf-toml-mode-hook 'smartparens-mode))
 
@@ -339,7 +312,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** avy
 #+BEGIN_SRC emacs-lisp
   (use-package avy
-    :ensure t
     :bind (("C-'" . 'avy-goto-char)))
 #+END_SRC
 
@@ -347,7 +319,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :defer t
-    :ensure t
     :config
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 #+END_SRC
@@ -355,16 +326,14 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** expand-region
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
-    :ensure t
     :bind (("C-;" . 'er/expand-region)))
 #+END_SRC
 
 *** smartparens
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
-    :ensure t
     :config 
-    (use-package smartparens-config)
+    (require 'smartparens-config)
     (setq-default sp-escape-quotes-after-insert nil)
     :hook (prog-mode . smartparens-mode))
 #+END_SRC
@@ -372,21 +341,17 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** multiple-cursors
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
-    :defer t
-    :ensure t)
+    :defer t)
 #+END_SRC
 
 ** Paradigms
 *** ivy
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
-  :ensure t
   :config
   (ivy-mode 1)
-  (use-package counsel
-    :ensure t)
-  (use-package swiper
-    :ensure t)
+  (use-package counsel)
+  (use-package swiper)
   (counsel-mode)
   (setq ivy-initial-inputs-alist nil)
   :bind (("C-S-s" . 'swiper)))
@@ -397,14 +362,12 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :defer t
-    :ensure t
     :hook (prog-mode . yas-minor-mode))
 #+END_SRC
 **** snippets
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet-snippets
     :defer t
-    :ensure t
     :after (yasnippet)
     :config (yas-reload-all))
 #+END_SRC
@@ -412,7 +375,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :ensure t
     :defer t
     :bind (("C-c g" . 'magit-status)))
 #+END_SRC
@@ -420,7 +382,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :ensure t
     :init
     :config
     (projectile-mode +1)
@@ -429,7 +390,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 **** Counsel/Ivy integration
 #+BEGIN_SRC emacs-lisp
   (use-package counsel-projectile
-    :ensure t
     :config
     (counsel-projectile-mode))
 #+END_SRC
