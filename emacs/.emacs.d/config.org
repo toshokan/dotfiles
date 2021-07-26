@@ -149,23 +149,12 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 #+END_SRC
 
-*** language-server-protocol
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :defer t
-    :config)
-  (use-package lsp-ui
-    :defer t
-    :config)
-  (use-package company-lsp
-    :defer t)
-#+END_SRC
-
 ** Language and Filetype Support
 *** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :config (setq lsp-rust-server 'rust-analyzer)
+    :config (setq lsp-rust-server 'rust-analyzer
+                  lsp-enable-on-type-formatting nil)
     :hook ((rust-mode . lsp)
            (java-mode . tkn/lsp-if-in-workspace)))
   (use-package company-lsp)
