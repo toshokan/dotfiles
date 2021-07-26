@@ -109,6 +109,11 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                       :background 'unspecified)
   (setq tab-bar-close-button-show nil)
 #+END_SRC
+** Prompts
+"yes" is too many letters
+#+BEGIN_SRC emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
 * Packages
 ** Built-in updates
 *** tramp
