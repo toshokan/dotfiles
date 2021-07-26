@@ -108,6 +108,13 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (setq tab-bar-close-button-show nil)
 #+END_SRC
 * Packages
+** Built-in updates
+*** tramp
+#+BEGIN_SRC emacs-lisp
+  (use-package tramp
+    :straight (tramp :build t :pre-build (("make" "autoloads"))))
+    ;; :init (autoload #'tramp-register-crypt-file-name-handler "tramp-crypt"))
+#+END_SRC
 ** Bindings
 *** hydra
 #+BEGIN_SRC emacs-lisp
