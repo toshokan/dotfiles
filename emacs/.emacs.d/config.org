@@ -461,12 +461,18 @@ run in.
 #+END_SRC
 *** lsp-remote
 #+BEGIN_SRC emacs-lisp
-  (defun tkn/make-remote-lsp-client (original-client-id new-client-id new-connection)
-    (let* ((client (copy-lsp--client (gethash original-client-id lsp-clients))))
-      (setf (lsp--client-new-connection client) new-connection)
-      (setf (lsp--client-remote? client) t)
-      (setf (lsp--client-server-id client) new-client-id)
-      (lsp-register-client client)))
+  (with-eval-after-load "lsp-mode"
+    (defun tkn/make-remote-lsp-client (original-client-id new-client-id new-connection)
+      (let* ((client (copy-lsp--client (gethash original-client-id lsp-clients))))
+        (setf (lsp--client-new-connection client) new-connection)
+        (setf (lsp--client-remote? client) t)
+        (setf (lsp--client-server-id client) new-client-id)
+        (lsp-register-client client))))
+  (with-eval-after-load "lsp-rust"
+    (tkn/make-remote-lsp-client
+     'rust-analyzer
+     'rust-analyzer-remote
+     (lsp-tramp-connection (lambda () "rust-analyzer"))))
 #+END_SRC
 * Miscellaneous Bindings
 ** Windmove
