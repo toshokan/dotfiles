@@ -1,8 +1,5 @@
 * Early Startup Tasks
 ** Ensure we can load packages
-*** straight
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
 *** use-package
 Ensure that ~use-package~ is always pulled in so that the rest of the
 packages can be installed.
