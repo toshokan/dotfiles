@@ -109,6 +109,15 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                       :background 'unspecified)
   (setq tab-bar-close-button-show nil)
 #+END_SRC
+** Connections
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'tramp-connection-properties
+               (list (regexp-quote "/ssh:")
+                     "direct-async-process" t))
+  (connection-local-set-profile-variables
+    'remote-zsh
+    '((shell-file-name . "/bin/zsh")))
+#+END_SRC
 * Packages
 ** Built-in updates
 *** tramp
