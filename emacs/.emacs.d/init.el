@@ -1,5 +1,4 @@
 (setq vc-follow-symlinks t)
-(setq package-enable-at-startup nil)
 
 (defun tkn/emacs-d-filename (rel-name)
   "Evaluates to an absolute path to a file named `rel-name` in
