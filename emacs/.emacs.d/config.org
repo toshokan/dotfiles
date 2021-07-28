@@ -18,6 +18,11 @@ Ideally I should get around to changing the locking implementation to allow putt
   (setq gc-cons-threshold 100000000
         read-process-output-max (* 5 1024 1024))
 #+END_SRC
+*** native-comp
+#+BEGIN_SRC emacs-lisp
+  (unless (version< emacs-version "28.0")
+    (setq native-comp-async-jobs-number 8))
+#+END_SRC
 
 * General Configuration 
 ** Change ~*scratch*~ major mode
