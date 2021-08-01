@@ -15,7 +15,7 @@ Ideally I should get around to changing the locking implementation to allow putt
 #+END_SRC
 ** Performance
 #+BEGIN_SRC emacs-lisp
-  (setq gc-cons-threshold 100000000
+  (setq gc-cons-threshold 8000000
         read-process-output-max (* 5 1024 1024))
 #+END_SRC
 *** native-comp
