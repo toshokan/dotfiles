@@ -99,7 +99,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
-  (setq tab-bar-show 1)
+  (setq tab-bar-show t)
   (set-face-attribute 'tab-bar nil
                       :inherit 'mode-line
                       :foreground 'unspecified
