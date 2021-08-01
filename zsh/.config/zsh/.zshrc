@@ -40,6 +40,10 @@ grep() {
     command grep --color=auto "${@}"
 }
 
+weechat() {
+    TERM=xterm-256color command weechat
+}
+
 source_if_exists "${ZDOTDIR}/.zshrc.local"
 
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ '
