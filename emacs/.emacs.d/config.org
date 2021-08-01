@@ -134,6 +134,11 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
      '((shell-file-name . "/bin/zsh"))))
   
 #+END_SRC
+** Misc
+*** vterm
+#+BEGIN_SRC emacs-lisp
+  (use-package vterm)
+#+END_SRC
 ** Bindings
 *** hydra
 #+BEGIN_SRC emacs-lisp
