@@ -325,8 +325,18 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package conf-mode
     :demand t 
     :config (add-hook 'conf-toml-mode-hook 'smartparens-mode))
-
 #+END_SRC
+*** Web
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :mode "\\.erb\\'"
+    :config (setq web-mode-markup-indent-offset 2))
+#+END_SRC
+*** YAML
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode)
+#+END_SRC
+
 
 ** Motion, Editing, and Navigation
 *** avy
