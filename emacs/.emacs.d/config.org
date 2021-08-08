@@ -468,7 +468,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
   (defun tkn/find-favourite ()
     (interactive)
     (let ((file (ivy-read "Favourite: " tkn/favourites-list)))
-      (find-file file)))
+      (counsel-find-file file)))
 #+END_SRC
 ** Helpers
 *** lsp
