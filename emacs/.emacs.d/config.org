@@ -181,8 +181,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :hook ((rust-mode . lsp)
            (java-mode . tkn/lsp-if-in-workspace)))
   (use-package company-lsp)
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode))
 #+END_SRC
 *** C/C++
 **** ccls
