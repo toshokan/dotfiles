@@ -506,6 +506,10 @@ run in.
      (lsp-tramp-connection (lambda () "rust-analyzer"))))
 #+END_SRC
 * Miscellaneous Bindings
+** Buffer Management
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x 4 k") 'kill-this-buffer)
+#+END_SRC
 ** Windmove
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-S-h") 'windmove-left)
