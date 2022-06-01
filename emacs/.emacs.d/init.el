@@ -16,3 +16,4 @@ the user's Emacs directory"
 ;; Load all necessary configs
 (tkn/load-configs)
 (put 'dired-find-alternate-file 'disabled nil)
+(put 'narrow-to-region 'disabled nil)

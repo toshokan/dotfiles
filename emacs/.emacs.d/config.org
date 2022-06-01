@@ -1,4 +1,8 @@
 * Early Startup Tasks
+** Lexical Binding
+#+BEGIN_SRC emacs-lisp
+;; -*- lexical-binding: t -*-
+#+END_SRC
 ** Ensure we can load packages
 *** use-package
 Ensure that ~use-package~ is always pulled in so that the rest of the
@@ -15,7 +19,7 @@ Ideally I should get around to changing the locking implementation to allow putt
 #+END_SRC
 ** Performance
 #+BEGIN_SRC emacs-lisp
-  (setq gc-cons-threshold 8000000
+  (setq gc-cons-threshold 80000000
         read-process-output-max (* 5 1024 1024))
 #+END_SRC
 *** native-comp
@@ -54,7 +58,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 **** Default
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil
-                      :height 90
+                      :height 120
                       :family "Iosevka")
  #+END_SRC
 **** Markdown code face used in lsp-sideline
@@ -90,12 +94,23 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+END_SRC
 
 *** Themes
-*** base16-tomorrow
+**** modus
+#+BEGIN_SRC emacs-lisp
+  (use-package modus-themes
+    :config (setq modus-themes-bold-constructs t
+                  modus-themes-italic-constructs t
+                  modus-themes-syntax '(alt-syntax)
+                  modus-themes-prompts '(intense)
+                  modus-themes-mode-line '(accented)
+                  modus-theme-fringes '(subtle)
+                  modus-themes-paren-match '(intense))
+    (load-theme 'modus-vivendi t))
+#+END_SRC
+**** base16-tomorrow
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
     :config
-    (setq base16-theme-256-color-source "colors")
-    (load-theme 'base16-tomorrow-night t))
+    (setq base16-theme-256-color-source "colors"))
 #+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
@@ -153,18 +168,20 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+END_SRC
 
 ** Completion and Error Checking
-*** company
+*** corfu
 #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :hook (prog-mode . company-mode)
-    :config
-    (setq company-dabbrev-downcase nil
-          company-idle-delay 0
-          company-minimum-prefix-length 2))
+  (use-package corfu
+    :init (corfu-global-mode)
+    :config (setq corfu-auto t
+                  corfu-quit-no-match 'separator))
+
+  (use-package emacs
+    :init (setq completion-cycle-threshold 3
+                tab-always-indent 'complete))
 #+END_SRC
 
 *** flycheck
-Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-mode~
+Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-mode~
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :hook (prog-mode . flycheck-mode)
@@ -176,11 +193,22 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :config (setq lsp-rust-server 'rust-analyzer
-                  lsp-enable-on-type-formatting nil)
+    :config (setq lsp-use-plists t
+                  lsp-rust-server 'rust-analyzer
+                  lsp-enable-on-type-formatting nil
+                  lsp-enable-indentation nil
+                  lsp-apply-edits-after-file-operations nil
+                  lsp-before-save-edits nil
+                  lsp-completion-provider :none)
+    (add-to-list 'lsp-language-id-configuration
+               '(".*\\.html\\.erb$" . "ruby"))
+    (advice-add 'lsp
+                :before
+                (lambda (&rest _args)
+                  (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
     :hook ((rust-mode . lsp)
-           (java-mode . tkn/lsp-if-in-workspace)))
-  (use-package company-lsp)
+           (java-mode . tkn/lsp-if-in-workspace)
+           (web-mode . tkn/lsp-if-in-workspace)))
 #+END_SRC
 *** C/C++
 **** ccls
@@ -209,9 +237,7 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 **** Formatting
 #+BEGIN_SRC emacs-lisp
   (add-hook 'java-mode-hook (lambda ()
-                              (setq c-basic-offset 4
-                                    tab-width 4
-                                    indent-tabs-mode t)))
+                              (setq c-basic-offset 4)))
 #+END_SRC
 **** lsp-java
 #+BEGIN_SRC emacs-lisp
@@ -239,22 +265,11 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
     :defer t
     :hook (rjsx-mode . prettier-js-mode))
 #+END_SRC
-**** Vue
-#+BEGIN_SRC emacs-lisp
-  (use-package vue-mode
-    :defer t
-    :hook (mmm-mode . (lambda () (set-face-background 'mmm-default-submode-face nil))))
-#+END_SRC
-**** Typescript
-#+BEGIN_SRC emacs-lisp
-  (use-package typescript-mode
-    :defer t
-    :hook (typescript-mode . tkn/lsp-if-in-workspace))
-#+END_SRC
 *** LaTeX
 **** AUCTeX
 #+BEGIN_SRC emacs-lisp
-  (use-package auctex
+  (use-package tex
+    :straight auctex
     :defer t
     :config
     (setq TeX-auto-save t
@@ -266,8 +281,6 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
                   TeX-engine 'luatex)
     (add-hook 'TeX-after-compilation-finished-functions 
               'TeX-revert-document-buffer))
-  (use-package company-auctex
-    :defer t)
 #+END_SRC
 *** OCaml
 #+BEGIN_SRC emacs-lisp
@@ -286,7 +299,8 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package enh-ruby-mode
     :config (setq lsp-solargraph-diagnostics nil
-                  lsp-solargraph-use-bundler t)
+                  lsp-solargraph-use-bundler t
+                  lsp-solargraph-multi-root nil)
     :hook ((ruby-mode . enh-ruby-mode)
            (enh-ruby-mode . lsp)))
 
@@ -327,14 +341,17 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 *** Web
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
-    :mode "\\.erb\\'"
-    :config (setq web-mode-markup-indent-offset 2))
+    :mode ("\\.erb\\'" "\\.vue\\'" "\\.ts\\'")
+    :config (setq web-mode-markup-indent-offset 2
+                  web-mode-css-indent-offset 2
+                  web-mode-code-indent-offset 2
+                  web-mode-script-padding 0
+                  web-mode-style-padding 0))
 #+END_SRC
 *** YAML
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode)
 #+END_SRC
-
 
 ** Motion, Editing, and Navigation
 *** avy
@@ -373,16 +390,71 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 ** Paradigms
+*** Vertico
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico
+    :straight (:files (:defaults "extensions/*"))
+    :config
+    (setq vertico-sort-function #'vertico-sort-alpha)
+    (vertico-mode 1))
+#+END_SRC
+**** vertico-directory extension
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico-directory
+    :straight nil
+    :ensure nil
+    :after vertico
+    :bind (:map vertico-map
+                ("RET" . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word))
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+#+END_SRC
+*** Consult
+#+BEGIN_SRC emacs-lisp
+  (use-package consult
+    :config
+    (setq consult-preview-key nil
+          consult-buffer-sources '(consult--source-hidden-buffer consult--source-buffer))
+    :bind (("C-x b" . consult-buffer)
+           ("C-s" . consult-line)
+           ("M-y" . consult-yank-pop)
+           ("M-g g" . consult-goto-line)
+           ("M-g i" . consult-imenu)))
+#+END_SRC
+*** Embark
+#+BEGIN_SRC emacs-lisp
+  (use-package embark
+    :bind (("C-." . embark-act)
+           ("C-;" . embark-dwim)
+           ("C-h B" . embark-bindings)))
+  (use-package embark-consult
+    :after (consult embark))
+#+END_SRC
+*** Orderless
+#+BEGIN_SRC emacs-lisp
+  (use-package orderless
+    :custom
+    (completion-styles '(substring orderless))
+    (completion-category-overrides '((file (styles basic partial-completion orderless)))))
+#+END_SRC
+*** Marginalia
+#+BEGIN_SRC emacs-lisp
+  (use-package marginalia
+    :init (marginalia-mode)
+    :bind (:map minibuffer-local-map
+                ("M-A" . marginalia-cycle)))
+#+END_SRC
 *** ivy
 #+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :config
-  (ivy-mode 1)
-  (use-package counsel)
-  (use-package swiper)
-  (counsel-mode)
-  (setq ivy-initial-inputs-alist nil)
-  :bind (("C-S-s" . 'swiper)))
+  ;; (use-package ivy
+  ;;   :config
+  ;;   (ivy-mode 1)
+  ;;   (use-package counsel)
+  ;;   (use-package swiper)
+  ;;   (counsel-mode)
+  ;;   (setq ivy-initial-inputs-alist nil)
+  ;;   :bind (("C-S-s" . 'swiper)))
 #+END_SRC
 
 ** Snippets
@@ -417,9 +489,9 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 **** Counsel/Ivy integration
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel-projectile
-    :config
-    (counsel-projectile-mode))
+  ;; (use-package counsel-projectile
+  ;;   :config
+  ;;   (counsel-projectile-mode))
 #+END_SRC
 
 * Mode configuration
@@ -473,10 +545,10 @@ Disable ~emacs-lisp=checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 ** Load favourite
 #+BEGIN_SRC emacs-lisp
-  (defun tkn/find-favourite ()
-    (interactive)
-    (let ((file (ivy-read "Favourite: " tkn/favourites-list)))
-      (counsel-find-file file)))
+  ;; (defun tkn/find-favourite ()
+  ;;   (interactive)
+  ;;   (let ((file (ivy-read "Favourite: " tkn/favourites-list)))
+  ;;     (counsel-find-file file)))
 #+END_SRC
 ** Helpers
 *** lsp
