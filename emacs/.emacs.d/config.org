@@ -234,6 +234,13 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
+*** Go
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :defer t
+    :hook (go-mode . (lambda ()
+                       (setq tab-width 4))))
+#+END_SRC
 *** Java
 **** Formatting
 #+BEGIN_SRC emacs-lisp
