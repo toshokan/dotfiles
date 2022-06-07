@@ -171,7 +171,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** corfu
 #+BEGIN_SRC emacs-lisp
   (use-package corfu
-    :init (corfu-global-mode)
+    :init (global-corfu-mode)
     :config (setq corfu-auto t
                   corfu-quit-no-match 'separator))
 
