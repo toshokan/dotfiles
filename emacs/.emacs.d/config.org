@@ -24,8 +24,16 @@ Ideally I should get around to changing the locking implementation to allow putt
 #+END_SRC
 *** native-comp
 #+BEGIN_SRC emacs-lisp
+  (defun tkn/num-cpu-cores ()
+    (when (file-exists-p "/proc/cpuinfo")
+      (with-temp-buffer
+        (insert-file-contents "/proc/cpuinfo")
+        (when (re-search-forward
+               "cpu cores[[:space:]]: \\([[:digit:]]\\)" nil t)
+          (* 2 (string-to-number (match-string 1)))))))
+
   (unless (version< emacs-version "28.0")
-    (setq native-comp-async-jobs-number 8))
+    (setq native-comp-async-jobs-number (or (tkn/num-cpu-cores) 4)))
 #+END_SRC
 
 * General Configuration 
@@ -63,9 +71,9 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
  #+END_SRC
 **** Markdown code face used in lsp-sideline
  #+BEGIN_SRC emacs-lisp
- (with-eval-after-load "markdown-mode"
-  (set-face-attribute 'markdown-code-face nil
-		       :inherit nil))
+   (with-eval-after-load "markdown-mode"
+     (set-face-attribute 'markdown-code-face nil
+                         :inherit nil))
  #+END_SRC
 
 *** Get rid of graphical prompts
@@ -106,33 +114,26 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                   modus-themes-paren-match '(intense))
     (load-theme 'modus-vivendi t))
 #+END_SRC
-**** base16-tomorrow
-#+BEGIN_SRC emacs-lisp
-  (use-package base16-theme
-    :config
-    (setq base16-theme-256-color-source "colors"))
-#+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
-  (setq tab-bar-show t)
+  (setq tab-bar-mode t
+        tab-bar-show 0
+        tab-bar-close-button-show nil)
   (set-face-attribute 'tab-bar nil
-                      :inherit 'mode-line
-                      :foreground 'unspecified
-                      :background 'unspecified)
+                      :inherit 'mode-line)
   (set-face-attribute 'tab-bar-tab nil
-                      :inherit 'mode-line-highlight
-                      :foreground 'unspecified
-                      :background 'unspecified)
+                      :inherit 'mode-line-emphasis)
   (set-face-attribute 'tab-bar-tab-inactive nil
-                      :inherit 'mode-line-inactive
-                      :foreground 'unspecified
-                      :background 'unspecified)
-  (setq tab-bar-close-button-show nil)
+                      :inherit 'mode-line)
 #+END_SRC
 ** Prompts
 "yes" is too many letters
 #+BEGIN_SRC emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+** Auth sources
+#+BEGIN_SRC emacs-lisp
+  (setq auth-sources '("secrets:default"))
 #+END_SRC
 * Packages
 ** Built-in updates
@@ -147,7 +148,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     (connection-local-set-profile-variables
      'remote-zsh
      '((shell-file-name . "/bin/zsh"))))
-  
+
 #+END_SRC
 ** Misc
 *** vterm
@@ -190,7 +191,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 ** Language and Filetype Support
-*** LSP
+*** LISP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :config (setq lsp-use-plists t
@@ -266,7 +267,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (rjsx-mode . prettier-js-mode))
 #+END_SRC
 *** LaTeX
-**** AUCTeX
+**** Aztecs
 #+BEGIN_SRC emacs-lisp
   (use-package tex
     :straight auctex
@@ -420,7 +421,9 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
            ("C-s" . consult-line)
            ("M-y" . consult-yank-pop)
            ("M-g g" . consult-goto-line)
-           ("M-g i" . consult-imenu)))
+           ("M-g i" . consult-imenu)
+           :map org-mode-map
+           ("C-S-s" . consult-org-heading)))
 #+END_SRC
 *** Embark
 #+BEGIN_SRC emacs-lisp
@@ -478,7 +481,15 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :defer t
     :bind (("C-c g" . 'magit-status)))
 #+END_SRC
-
+**** forge integration
+#+BEGIN_SRC emacs-lisp
+  (use-package forge)
+#+END_SRC
+**** todos
+#+BEGIN_SRC emacs-lisp
+  (use-package magit-todos
+    :config (magit-todos-mode))
+#+END_SRC
 *** projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -507,6 +518,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 ** org-mode
    #+BEGIN_SRC emacs-lisp
+     (setq org-fold-core-style 'overlays)
      (add-hook 'org-mode-hook 'yas-minor-mode)
      (add-hook 'org-mode-hook 'org-indent-mode)
      (add-hook 'org-mode-hook 'flyspell-mode)
@@ -538,17 +550,17 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (defun tkn/find-config ()
     (interactive)
-    (find-file (expand-file-name "~/.emacs.d/config.org")))
+    (find-file (tkn/emacs-d-filename "config.org")))
   (defun tkn/reload-config ()
     (interactive)
     (tkn/load-configs))
 #+END_SRC
 ** Load favourite
 #+BEGIN_SRC emacs-lisp
-  ;; (defun tkn/find-favourite ()
-  ;;   (interactive)
-  ;;   (let ((file (ivy-read "Favourite: " tkn/favourites-list)))
-  ;;     (counsel-find-file file)))
+  (defun tkn/find-favourite ()
+    (interactive)
+    (let ((file (completing-read "Favourite: " tkn/favourites-list nil t)))
+      (find-file file)))
 #+END_SRC
 ** Helpers
 *** lsp
@@ -577,6 +589,14 @@ run in.
      'rust-analyzer-remote
      (lsp-tramp-connection (lambda () "rust-analyzer"))))
 #+END_SRC
+** Interaction
+#+BEGIN_SRC emacs-lisp
+  (defun tkn/find-in (dir initial)
+    (let ((consult-async-split-style nil)
+          (consult-find-args
+           (concat consult-find-args " -maxdepth 1")))
+      (consult-find dir initial)))
+#+END_SRC
 * Miscellaneous Bindings
 ** Buffer Management
 #+BEGIN_SRC emacs-lisp
@@ -596,10 +616,10 @@ run in.
     "config"
     ("f" tkn/find-config "find")
     ("r" tkn/reload-config "reload")
-    ("if" (find-file (concat user-emacs-directory "init.el")) "find init.el")
-    ("ef" (find-file (concat user-emacs-directory "early-init.el")) "find early-init.el")
-    ("of" (counsel-find-file (concat user-emacs-directory "org")) "find other configuration")
-    ("ir" (load-file (concat user-emacs-directory "init.el")) "reload init.el"))
+    ("if" (find-file (tkn/emacs-d-filename "init.el")) "find init.el")
+    ("ef" (find-file (tkn/emacs-d-filename "early-init.el")) "find early-init.el")
+    ("of" (tkn/find-in user-emacs-directory "\\.org") "find other configuration")
+    ("ir" (load-file (tkn/emacs-d-filename "init.el")) "reload init.el"))
   (global-set-key (kbd "C-z c") 'hydra-config/body)
 #+END_SRC
 *** Current buffer
