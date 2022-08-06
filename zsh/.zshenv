@@ -20,7 +20,7 @@ typeset -Ux path=($env_path
 	          $rust_path
 	          $opt_path
 		  $path_local
-	          $path)
+		  $path)
 
 # Fix grey Java GUIs
 typeset -x _JAVA_AWT_WM_NONREPARENTING=1
@@ -31,6 +31,7 @@ typeset -x LESSHISTFILE=-
 typeset -x ALTERNATE_EDITOR=""
 typeset -x SUDO_EDITOR=${EDITOR}
 typeset -x GPG_TTY=$(tty)
+typeset -x LSP_USE_PLISTS=true
 
 E() {
     typeset -x SUDO_EDITOR=${EDITOR}
@@ -73,7 +74,7 @@ eph() {
 }
 
 kt() {
-    killall Telegram 2>&1 >/dev/null
+    killall telegram-desktop 2>&1 >/dev/null
 }
 EDITOR() {
     ${=EDITOR} ${@}
