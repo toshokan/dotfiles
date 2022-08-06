@@ -65,8 +65,11 @@ unzipdir() {
 eph() {
     tmpdir=$(mktemp -d --suffix=".eph")
     ${=SHELL} -c "cd ${tmpdir}; exec ${SHELL}"
-    echo "Are you sure you want to clear ${tmpdir}?"
-    rm -rf -I ${tmpdir}
+    read "choice?Are you sure you want to clear ${tmpdir}? "
+    if [[ $choice =~ ^[Yy]$ ]]
+    then
+	rm -rf ${tmpdir}
+    fi
 }
 
 kt() {
