@@ -46,7 +46,7 @@ package initializations until after ~prog-mode~ is useless.
 #+END_SRC
 ** Don't use tabs for indentation
 #+BEGIN_SRC emacs-lisp
-  (setq indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil)
 #+END_SRC
 ** Don't allow lines that aren't lines
 #+BEGIN_SRC emacs-lisp
@@ -193,23 +193,23 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 ** Language and Filetype Support
 *** LISP
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :config (setq lsp-use-plists t
-                  lsp-rust-server 'rust-analyzer
-                  lsp-enable-on-type-formatting nil
-                  lsp-enable-indentation nil
-                  lsp-apply-edits-after-file-operations nil
-                  lsp-before-save-edits nil
-                  lsp-completion-provider :none)
-    (add-to-list 'lsp-language-id-configuration
-               '(".*\\.html\\.erb$" . "ruby"))
-    (advice-add 'lsp
-                :before
-                (lambda (&rest _args)
-                  (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
-    :hook ((rust-mode . lsp)
-           (java-mode . tkn/lsp-if-in-workspace)
-           (web-mode . tkn/lsp-if-in-workspace)))
+    (use-package lsp-mode
+      :config (setq lsp-use-plists t
+                    lsp-rust-server 'rust-analyzer
+                    lsp-enable-on-type-formatting nil
+                    lsp-enable-indentation nil
+                    lsp-apply-edits-after-file-operations nil
+                    lsp-before-save-edits nil
+                    lsp-completion-provider :none)
+      (add-to-list 'lsp-language-id-configuration
+                 '(".*\\.html\\.erb$" . "ruby"))
+      (advice-add 'lsp
+                  :before
+                  (lambda (&rest _args)
+                    (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
+      :hook ((rust-mode . lsp)
+             (java-mode . tkn/lsp-if-in-workspace)
+             (web-mode . tkn/lsp-if-in-workspace)))
 #+END_SRC
 *** C/C++
 **** ccls
@@ -234,6 +234,11 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
+*** Dotnet
+#+BEGIN_SRC emacs-lisp
+  (use-package csharp-mode
+    :hook (csharp-mode . lsp))
+#+END_SRC
 *** Go
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
@@ -455,17 +460,6 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :bind (:map minibuffer-local-map
                 ("M-A" . marginalia-cycle)))
 #+END_SRC
-*** ivy
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package ivy
-  ;;   :config
-  ;;   (ivy-mode 1)
-  ;;   (use-package counsel)
-  ;;   (use-package swiper)
-  ;;   (counsel-mode)
-  ;;   (setq ivy-initial-inputs-alist nil)
-  ;;   :bind (("C-S-s" . 'swiper)))
-#+END_SRC
 
 ** Snippets
 *** yasnippet
@@ -504,12 +498,6 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :config
     (projectile-mode +1)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-#+END_SRC
-**** Counsel/Ivy integration
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package counsel-projectile
-  ;;   :config
-  ;;   (counsel-projectile-mode))
 #+END_SRC
 
 * Mode configuration
@@ -721,7 +709,7 @@ run in.
   (defhydra hydra-agenda ()
     "Agenda operations"
     ("a" org-agenda "open agenda" :color blue)
-    ("f" (counsel-find-file (car org-agenda-files)) "find" :color blue))
+    ("f" (tkn/find-in (car org-agenda-files) "\\.org") "find" :color blue))
   (global-set-key (kbd "C-z a") 'hydra-agenda/body)
 #+END_SRC
 * General behaviour
