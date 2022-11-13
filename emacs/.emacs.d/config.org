@@ -46,7 +46,8 @@ package initializations until after ~prog-mode~ is useless.
 #+END_SRC
 ** Don't use tabs for indentation
 #+BEGIN_SRC emacs-lisp
-  (setq-default indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil
+                c-basic-offset 4)
 #+END_SRC
 ** Don't allow lines that aren't lines
 #+BEGIN_SRC emacs-lisp
