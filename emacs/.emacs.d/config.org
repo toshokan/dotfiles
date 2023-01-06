@@ -699,6 +699,14 @@ run in.
     ("r" tab-bar-switch-to-recent-tab "recent" :color blue))
   (global-set-key (kbd "C-z t") 'hydra-tabs/body)
 #+END_SRC
+*** Themes
+#+BEGIN_SRC emacs-lisp
+  (defhydra hydra-themes ()
+    "Theme operations"
+    ("t" modus-themes-toggle "toggle" :color blue)
+    ("s" modus-themes-select "select" :color blue))
+  (global-set-key (kbd "C-z T") 'hydra-themes/body)
+#+END_SRC
 *** Agenda
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-agenda ()
