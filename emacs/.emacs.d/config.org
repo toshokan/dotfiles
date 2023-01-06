@@ -120,12 +120,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (setq tab-bar-mode t
         tab-bar-show 0
         tab-bar-close-button-show nil)
-  (set-face-attribute 'tab-bar nil
-                      :inherit 'mode-line)
-  (set-face-attribute 'tab-bar-tab nil
-                      :inherit 'mode-line-emphasis)
-  (set-face-attribute 'tab-bar-tab-inactive nil
-                      :inherit 'mode-line)
 #+END_SRC
 ** Prompts
 "yes" is too many letters
