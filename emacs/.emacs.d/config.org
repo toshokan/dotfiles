@@ -89,14 +89,10 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (scroll-bar-mode -1)
 #+END_SRC
 
-*** Mode Line
-**** Time and battery
+*** Lines and line numbers
 #+BEGIN_SRC emacs-lisp
-  (display-time-mode)
-  (column-number-mode)
+  (global-hl-line-mode 1)
 #+END_SRC
-
-**** Line numbers
 #+BEGIN_SRC emacs-lisp
   (add-hook 'prog-mode-hook (lambda ()
                               (setq-local display-line-numbers 'relative)))
@@ -112,7 +108,16 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                   modus-themes-prompts '(intense)
                   modus-themes-mode-line '(accented)
                   modus-theme-fringes '(subtle)
-                  modus-themes-paren-match '(intense))
+                  modus-themes-paren-match '(intense)
+                  modus-vivendi-palette-overrides
+                  '((bg-mode-line-active bg-magenta-intense)
+                    (border-mode-line-active bg-magenta-intense)
+                    (border-mode-line-inactive bg-magenta-subtle)
+                    (fringe bg-magenta-nuanced)
+                    (bg-hl-line bg-magenta-subtle)
+                    (bg-line-number-active bg-magenta-intense)
+                    (bg-tab-current bg-magenta-subtle)
+                    (cursor cyan)))
     (load-theme 'modus-vivendi t))
 #+END_SRC
 *** Tabs
