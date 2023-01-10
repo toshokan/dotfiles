@@ -193,23 +193,26 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 ** Language and Filetype Support
 *** LISP
 #+BEGIN_SRC emacs-lisp
-    (use-package lsp-mode
-      :config (setq lsp-use-plists t
-                    lsp-rust-server 'rust-analyzer
-                    lsp-enable-on-type-formatting nil
-                    lsp-enable-indentation nil
-                    lsp-apply-edits-after-file-operations nil
-                    lsp-before-save-edits nil
-                    lsp-completion-provider :none)
-      (add-to-list 'lsp-language-id-configuration
-                 '(".*\\.html\\.erb$" . "ruby"))
-      (advice-add 'lsp
-                  :before
-                  (lambda (&rest _args)
-                    (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
-      :hook ((rust-mode . lsp)
-             (java-mode . tkn/lsp-if-in-workspace)
-             (web-mode . tkn/lsp-if-in-workspace)))
+  (use-package lsp-mode
+    :init (setq lsp-keymap-prefix "M-S-l")
+    :config (setq lsp-use-plists t
+                  lsp-rust-server 'rust-analyzer
+                  lsp-enable-on-type-formatting nil
+                  lsp-enable-indentation nil
+                  lsp-apply-edits-after-file-operations nil
+                  lsp-before-save-edits nil
+                  lsp-lens-place-position 'above-line
+                  lsp-completion-provider :none)
+    (add-to-list 'lsp-language-id-configuration
+               '(".*\\.html\\.erb$" . "ruby"))
+    (advice-add 'lsp
+                :before
+                (lambda (&rest _args)
+                  (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
+    :bind-keymap ("M-S-l" . lsp-command-map)
+    :hook ((rust-mode . lsp)
+           (java-mode . tkn/lsp-if-in-workspace)
+           (web-mode . tkn/lsp-if-in-workspace)))
 #+END_SRC
 *** C/C++
 **** ccls
@@ -237,7 +240,13 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 *** Dotnet
 #+BEGIN_SRC emacs-lisp
   (use-package csharp-mode
-    :hook (csharp-mode . lsp))
+    :hook (csharp-mode . (lambda ()
+                           (let* ((default-directory (projectile-project-root))
+                                  (sln (car
+                                        (file-expand-wildcards "*.sln" 't))))
+                             (if sln
+                                 (setq-local lsp-csharp-solution-file sln))
+                             (lsp)))))
 #+END_SRC
 *** Go
 #+BEGIN_SRC emacs-lisp
@@ -247,11 +256,6 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
                        (setq tab-width 4))))
 #+END_SRC
 *** Java
-**** Formatting
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'java-mode-hook (lambda ()
-                              (setq c-basic-offset 4)))
-#+END_SRC
 **** lsp-java
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-java
@@ -450,7 +454,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+BEGIN_SRC emacs-lisp
   (use-package orderless
     :custom
-    (completion-styles '(substring orderless))
+    (completion-styles '(substring orderless basic))
     (completion-category-overrides '((file (styles basic partial-completion orderless)))))
 #+END_SRC
 *** Marginalia
