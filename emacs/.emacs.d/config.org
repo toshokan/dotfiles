@@ -117,14 +117,18 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                     (bg-hl-line bg-magenta-subtle)
                     (bg-line-number-active bg-magenta-intense)
                     (bg-tab-current bg-magenta-subtle)
+                    (bg-tab-other bg-tab-bar)
                     (cursor cyan)))
     (load-theme 'modus-vivendi t))
 #+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
-  (setq tab-bar-mode t
+  (setq tab-bar-mode 1
         tab-bar-show 0
         tab-bar-close-button-show nil)
+  (global-set-key (kbd "M-<tab>") 'tab-next)
+  (global-set-key (kbd "M-S-<tab>") 'tab-previous)
+  (global-set-key (kbd "M-S-<iso-lefttab>") 'tab-previous)
 #+END_SRC
 ** Prompts
 "yes" is too many letters
