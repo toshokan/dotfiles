@@ -143,21 +143,27 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 ** Built-in updates
 *** tramp
 #+BEGIN_SRC emacs-lisp
-  (use-package tramp
-    :straight (tramp :build t :pre-build (("make" "autoloads")))
-    :config
-    (add-to-list 'tramp-connection-properties
-                 (list (regexp-quote "/ssh:")
-                       "direct-async-process" t))
-    (connection-local-set-profile-variables
+  ;; (use-package tramp
+  ;;   :straight (tramp :build t :pre-build (("make" "autoloads")))
+  ;;   :config
+  ;;   (add-to-list 'tramp-connection-properties
+  ;;                (list (regexp-quote "/ssh:")
+  ;;                      "direct-async-process" t))
+   (connection-local-set-profile-variables
      'remote-zsh
-     '((shell-file-name . "/bin/zsh"))))
+     '((shell-file-name . "/bin/zsh")))
 
 #+END_SRC
 ** Misc
 *** vterm
 #+BEGIN_SRC emacs-lisp
   (use-package vterm)
+#+END_SRC
+*** tree-sitter
+#+BEGIN_SRC emacs-lisp
+  (use-package treesit-auto
+    :config (setq treesit-auto-install 'prompt)
+    (global-treesit-auto-mode))
 #+END_SRC
 ** Bindings
 *** hydra
@@ -195,7 +201,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 
 ** Language and Filetype Support
-*** LISP
+*** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :init (setq lsp-keymap-prefix "M-S-l")
@@ -215,6 +221,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
                   (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
     :bind-keymap ("M-S-l" . lsp-command-map)
     :hook ((rust-mode . lsp)
+           (rust-ts-mode . lsp)
            (java-mode . tkn/lsp-if-in-workspace)
            (web-mode . tkn/lsp-if-in-workspace)))
 #+END_SRC
@@ -241,17 +248,6 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
-*** Dotnet
-#+BEGIN_SRC emacs-lisp
-  (use-package csharp-mode
-    :hook (csharp-mode . (lambda ()
-                           (let* ((default-directory (projectile-project-root))
-                                  (sln (car
-                                        (file-expand-wildcards "*.sln" 't))))
-                             (if sln
-                                 (setq-local lsp-csharp-solution-file sln))
-                             (lsp)))))
-#+END_SRC
 *** Go
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
@@ -287,7 +283,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :hook (rjsx-mode . prettier-js-mode))
 #+END_SRC
 *** LaTeX
-**** Aztecs
+**** Auctex
 #+BEGIN_SRC emacs-lisp
   (use-package tex
     :straight auctex
