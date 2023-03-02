@@ -109,7 +109,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                   modus-themes-mode-line '(accented)
                   modus-theme-fringes '(subtle)
                   modus-themes-paren-match '(intense)
-                  modus-vivendi-palette-overrides
+                  modus-themes-common-palette-overrides
                   '((bg-mode-line-active bg-magenta-intense)
                     (border-mode-line-active bg-magenta-intense)
                     (border-mode-line-inactive bg-magenta-subtle)
@@ -118,7 +118,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                     (bg-line-number-active bg-magenta-intense)
                     (bg-tab-current bg-magenta-subtle)
                     (bg-tab-other bg-tab-bar)
-                    (cursor cyan)))
+                    (cursor cyan))))
     (load-theme 'modus-vivendi t))
 #+END_SRC
 *** Tabs
