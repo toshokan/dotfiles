@@ -317,7 +317,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package pdf-tools
     :defer t
     :config
-    (pdf-tools-install))
+    (pdf-tools-install t))
 #+END_SRC
 *** TOML
 #+BEGIN_SRC emacs-lisp
