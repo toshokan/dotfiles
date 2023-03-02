@@ -418,7 +418,13 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package embark
     :bind* (("C-." . embark-act)
             ("C-;" . embark-dwim)
-            ("C-h B" . embark-bindings)))
+            ("C-h B" . embark-bindings))
+    :config
+    (define-key embark-identifier-map "R" 'eglot-rename)
+
+    (push 'embark--allow-edit
+          (alist-get 'eglot-rename embark-target-injection-hooks)))
+
   (use-package embark-consult
     :after (consult embark))
 #+END_SRC
