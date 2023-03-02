@@ -47,3 +47,5 @@ weechat() {
 source_if_exists "${ZDOTDIR}/.zshrc.local"
 
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ '
+
+true
