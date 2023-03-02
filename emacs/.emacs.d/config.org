@@ -192,20 +192,16 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                 tab-always-indent 'complete))
 #+END_SRC
 
-*** flycheck
-Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-mode~
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package flycheck
-  ;;   :hook (prog-mode . flycheck-mode)
-  ;;   :config
-  ;;   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-#+END_SRC
-
 *** flymake
 #+BEGIN_SRC emacs-lisp
   (use-package flymake
     :no-require t
-    :hook (prog-mode . flymake-mode))
+    :hook (prog-mode . flymake-mode)
+    :config (setq eldoc-echo-area-prefer-doc-buffer t
+                  eldoc-documentation-functions
+                  (cons #'flymake-eldoc-function
+                        (remove #'flymake-eldoc-function eldoc-documentation-functions))
+                  eldoc-documentation-strategy #'eldoc-documentation-compose))
 #+END_SRC
 
 ** Language and Filetype Support
