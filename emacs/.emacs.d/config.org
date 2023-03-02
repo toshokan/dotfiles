@@ -217,12 +217,19 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
        (when (file-directory-p ts-path)
          `(:typescript (:tsdk ,(file-name-as-directory ts-path))))))
 
+  (defun tkn/copy-eglot-config (from to)
+    (cl-destructuring-bind (_ _ spec) (eglot--lookup-mode from)
+      (when spec
+        (add-to-list 'eglot-server-programs
+                     `(,to . ,spec)))))
+
   (use-package eglot
     :config
     (add-to-list 'eglot-server-programs
                  '(web-mode . ("npx" "@volar/vue-language-server" "--stdio" :initializationOptions tkn/volar-server-options)))
     (add-to-list 'eglot-server-programs
-                 '(enh-ruby-mode . ("bundler" "exec" "solargraph" "stdio"))))
+                 '(enh-ruby-mode . ("bundler" "exec" "solargraph" "stdio")))
+    (tkn/copy-eglot-config 'rust-mode 'rust-ts-mode))
 #+END_SRC
 *** Clojure
 **** cider
