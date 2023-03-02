@@ -143,16 +143,11 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 ** Built-in updates
 *** tramp
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package tramp
-  ;;   :straight (tramp :build t :pre-build (("make" "autoloads")))
-  ;;   :config
-  ;;   (add-to-list 'tramp-connection-properties
-  ;;                (list (regexp-quote "/ssh:")
-  ;;                      "direct-async-process" t))
-   (connection-local-set-profile-variables
-     'remote-zsh
-     '((shell-file-name . "/bin/zsh")))
-
+  (use-package tramp
+    :straight nil
+    :config (connection-local-set-profile-variables
+             'remote-zsh
+             '((shell-file-name . "/bin/zsh"))))
 #+END_SRC
 ** Misc
 *** vterm
@@ -195,7 +190,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** flymake
 #+BEGIN_SRC emacs-lisp
   (use-package flymake
-    :no-require t
+    :straight nil
     :hook (prog-mode . flymake-mode)
     :config (setq eldoc-echo-area-prefer-doc-buffer t
                   eldoc-documentation-functions
@@ -221,6 +216,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                      `(,to . ,spec)))))
 
   (use-package eglot
+    :straight nil
     :config
     (add-to-list 'eglot-server-programs
                  '(web-mode . ("npx" "@volar/vue-language-server" "--stdio" :initializationOptions tkn/volar-server-options)))
