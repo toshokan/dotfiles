@@ -1,14 +1,14 @@
 * Early Startup Tasks
 ** Lexical Binding
 #+BEGIN_SRC emacs-lisp
-;; -*- lexical-binding: t -*-
+  ;; -*- lexical-binding: t -*-
 #+END_SRC
 ** Ensure we can load packages
 *** use-package
 Ensure that ~use-package~ is always pulled in so that the rest of the
 packages can be installed.
 #+BEGIN_SRC emacs-lisp
-  (straight-use-package 'use-package)
+  ;; (straight-use-package 'use-package)
   (setq straight-use-package-by-default t)
 #+END_SRC
 ** Disable interlocking
@@ -70,7 +70,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                       :height 120
                       :family "Iosevka")
  #+END_SRC
-**** Markdown code face used in lsp-sideline
+**** Markdown code face
  #+BEGIN_SRC emacs-lisp
    (with-eval-after-load "markdown-mode"
      (set-face-attribute 'markdown-code-face nil
@@ -194,47 +194,36 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** flycheck
 Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-mode~
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :hook (prog-mode . flycheck-mode)
-    :config
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  ;; (use-package flycheck
+  ;;   :hook (prog-mode . flycheck-mode)
+  ;;   :config
+  ;;   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+#+END_SRC
+
+*** flymake
+#+BEGIN_SRC emacs-lisp
+  (use-package flymake
+    :no-require t
+    :hook (prog-mode . flymake-mode))
 #+END_SRC
 
 ** Language and Filetype Support
 *** LSP
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :init (setq lsp-keymap-prefix "M-S-l")
-    :config (setq lsp-use-plists t
-                  lsp-rust-server 'rust-analyzer
-                  lsp-enable-on-type-formatting nil
-                  lsp-enable-indentation nil
-                  lsp-apply-edits-after-file-operations nil
-                  lsp-before-save-edits nil
-                  lsp-lens-place-position 'above-line
-                  lsp-completion-provider :none)
-    (add-to-list 'lsp-language-id-configuration
-               '(".*\\.html\\.erb$" . "ruby"))
-    (advice-add 'lsp
-                :before
-                (lambda (&rest _args)
-                  (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
-    :bind-keymap ("M-S-l" . lsp-command-map)
-    :hook ((rust-mode . lsp)
-           (rust-ts-mode . lsp)
-           (java-mode . tkn/lsp-if-in-workspace)
-           (web-mode . tkn/lsp-if-in-workspace)))
-#+END_SRC
-*** C/C++
-**** ccls
-#+BEGIN_SRC emacs-lisp
-  (use-package ccls
-    :hook ((c-mode c++-mode) .
-           (lambda ()
-             (require 'ccls)
-             (tkn/lsp-if-in-workspace))))
-#+END_SRC
+  (defun tkn/volar-server-options (server)
+    (let* ((project-root (when (fboundp 'projectile-project-root)
+                           (projectile-project-root)))
+            (ts-path (concat project-root "node_modules/typescript/lib")))
+       (when (file-directory-p ts-path)
+         `(:typescript (:tsdk ,(file-name-as-directory ts-path))))))
 
+  (use-package eglot
+    :config
+    (add-to-list 'eglot-server-programs
+                 '(web-mode . ("npx" "@volar/vue-language-server" "--stdio" :initializationOptions tkn/volar-server-options)))
+    (add-to-list 'eglot-server-programs
+                 '(enh-ruby-mode . ("bundler" "exec" "solargraph" "stdio"))))
+#+END_SRC
 *** Clojure
 **** cider
 #+BEGIN_SRC emacs-lisp
@@ -254,13 +243,6 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
     :defer t
     :hook (go-mode . (lambda ()
                        (setq tab-width 4))))
-#+END_SRC
-*** Java
-**** lsp-java
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-java
-    :defer t
-    :config (setq lsp-java-format-on-type-enabled nil))
 #+END_SRC
 *** JS/TS
 **** Formatting
@@ -304,23 +286,13 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
   (use-package tuareg
     :defer t)
 #+END_SRC
-*** Python
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-python-ms
-    :init (setq lsp-python-ms-auto-install-server t)
-    :hook (python-mode . (lambda ()
-                            (require 'lsp-python-ms)
-                            (tkn/lsp-if-in-workspace))))
-#+END_SRC
 *** Ruby
 #+BEGIN_SRC emacs-lisp
   (use-package enh-ruby-mode
     :config (setq lsp-solargraph-diagnostics nil
                   lsp-solargraph-use-bundler t
                   lsp-solargraph-multi-root nil)
-    :hook ((ruby-mode . enh-ruby-mode)
-           (enh-ruby-mode . lsp)))
-
+    :hook ((ruby-mode . enh-ruby-mode)))
 #+END_SRC
 *** Rust
 **** rust-mode
@@ -331,8 +303,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 *** Scala
 **** scala-mode
 #+BEGIN_SRC emacs-lisp
-  (use-package scala-mode
-    :hook (scala-mode . lsp))
+  (use-package scala-mode)
 #+END_SRC
 
 *** Haskell
@@ -444,9 +415,9 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 *** Embark
 #+BEGIN_SRC emacs-lisp
   (use-package embark
-    :bind (("C-." . embark-act)
-           ("C-;" . embark-dwim)
-           ("C-h B" . embark-bindings)))
+    :bind* (("C-." . embark-act)
+            ("C-;" . embark-dwim)
+            ("C-h B" . embark-bindings)))
   (use-package embark-consult
     :after (consult embark))
 #+END_SRC
@@ -517,7 +488,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 ** org-mode
    #+BEGIN_SRC emacs-lisp
-     (setq org-fold-core-style 'overlays)
+     (setq org-fold-core-style 'text-properties)
      (add-hook 'org-mode-hook 'yas-minor-mode)
      (add-hook 'org-mode-hook 'org-indent-mode)
      (add-hook 'org-mode-hook 'flyspell-mode)
@@ -562,31 +533,20 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
       (find-file file)))
 #+END_SRC
 ** Helpers
-*** lsp
-Lots of files aren't in project workspaces. I don't want to launch
-lsp-mode for them, even if only to add them to the "ignore
-list". Instead, I'll explicitly add workspaces I _do_ want lsp-mode to
-run in.
-#+BEGIN_SRC emacs-lisp
-  (defun tkn/lsp-if-in-workspace ()
-    (interactive)
-    (when (lsp-workspace-root)
-      (lsp)))
-#+END_SRC
 *** lsp-remote
 #+BEGIN_SRC emacs-lisp
-  (with-eval-after-load "lsp-mode"
-    (defun tkn/make-remote-lsp-client (original-client-id new-client-id new-connection)
-      (let* ((client (copy-lsp--client (gethash original-client-id lsp-clients))))
-        (setf (lsp--client-new-connection client) new-connection)
-        (setf (lsp--client-remote? client) t)
-        (setf (lsp--client-server-id client) new-client-id)
-        (lsp-register-client client))))
-  (with-eval-after-load "lsp-rust"
-    (tkn/make-remote-lsp-client
-     'rust-analyzer
-     'rust-analyzer-remote
-     (lsp-tramp-connection (lambda () "rust-analyzer"))))
+  ;; (with-eval-after-load "lsp-mode"
+  ;;   (defun tkn/make-remote-lsp-client (original-client-id new-client-id new-connection)
+  ;;     (let* ((client (copy-lsp--client (gethash original-client-id lsp-clients))))
+  ;;       (setf (lsp--client-new-connection client) new-connection)
+  ;;       (setf (lsp--client-remote? client) t)
+  ;;       (setf (lsp--client-server-id client) new-client-id)
+  ;;       (lsp-register-client client))))
+  ;; (with-eval-after-load "lsp-rust"
+  ;;   (tkn/make-remote-lsp-client
+  ;;    'rust-analyzer
+  ;;    'rust-analyzer-remote
+  ;;    (lsp-tramp-connection (lambda () "rust-analyzer"))))
 #+END_SRC
 ** Interaction
 #+BEGIN_SRC emacs-lisp
@@ -637,7 +597,7 @@ run in.
     ("s" hydra-smartparens/body "smartparens")
     ("m" hydra-multiple-cursors/body "multiple-cursors")
     ("r" hydra-rectangle/body "rectangles")
-    ("e" hydra-lsp/body "editing")
+    ;; ("e" hydra-lsp/body "editing")
     ("f" tkn/find-favourite "favourite"))
   (global-set-key (kbd "C-z z") 'hydra-index/body)
 #+END_SRC
@@ -660,14 +620,6 @@ run in.
     "rectangles"
     ("s" string-rectange "string")
     ("i" string-insert-rectangle "string insert"))
-#+END_SRC
-*** lsp
-#+BEGIN_SRC emacs-lisp
-  (defhydra hydra-lsp (:color blue)
-    "lsp"
-    ("d" lsp-find-definition "find definition")
-    ("i" lsp-find-implementation "find implementation")
-    ("r" lsp-find-references "find references"))
 #+END_SRC
 *** smartparens
 #+BEGIN_SRC emacs-lisp
