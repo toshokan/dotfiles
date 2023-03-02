@@ -157,7 +157,8 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 ** Misc
 *** vterm
 #+BEGIN_SRC emacs-lisp
-  (use-package vterm)
+  (use-package vterm
+    :defer t)
 #+END_SRC
 *** tree-sitter
 #+BEGIN_SRC emacs-lisp
@@ -257,19 +258,10 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
   (setq js-indent-level 2
         typescript-indent-level 2)
 #+END_SRC
-**** rjsx-mode
-#+BEGIN_SRC emacs-lisp
-  (use-package rjsx-mode
-    :defer t
-    :mode ("\\.jsx$" "\\.tsx$")
-    :config (setq js2-basic-offset 2
-                  js2-strict-missing-semi-warning nil))
-#+END_SRC
 **** prettier
 #+BEGIN_SRC emacs-lisp
   (use-package prettier-js
-    :defer t
-    :hook (rjsx-mode . prettier-js-mode))
+    :defer t)
 #+END_SRC
 *** LaTeX
 **** Auctex
@@ -296,9 +288,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 *** Ruby
 #+BEGIN_SRC emacs-lisp
   (use-package enh-ruby-mode
-    :config (setq lsp-solargraph-diagnostics nil
-                  lsp-solargraph-use-bundler t
-                  lsp-solargraph-multi-root nil)
+    :defer t
     :hook ((ruby-mode . enh-ruby-mode)))
 #+END_SRC
 *** Rust
@@ -310,13 +300,15 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 *** Scala
 **** scala-mode
 #+BEGIN_SRC emacs-lisp
-  (use-package scala-mode)
+  (use-package scala-mode
+    :defer t)
 #+END_SRC
 
 *** Haskell
 **** haskell-mode
 #+BEGIN_SRC emacs-lisp
-  (use-package haskell-mode)
+  (use-package haskell-mode
+    :defer t)
 #+END_SRC
 
 *** PDF
@@ -336,6 +328,7 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 *** Web
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
+    :defer t
     :mode ("\\.erb\\'" "\\.vue\\'" "\\.ts\\'")
     :config (setq web-mode-markup-indent-offset 2
                   web-mode-css-indent-offset 2
@@ -345,14 +338,15 @@ Disable ~emacs-lisp-checkdoc~ since it causes annoying error reporting in ~org-m
 #+END_SRC
 *** YAML
 #+BEGIN_SRC emacs-lisp
-  (use-package yaml-mode)
+  (use-package yaml-mode
+    :defer t)
 #+END_SRC
 
 ** Motion, Editing, and Navigation
 *** avy
 #+BEGIN_SRC emacs-lisp
   (use-package avy
-    :bind (("C-'" . 'avy-goto-char)))
+    :bind* (("C-'" . 'avy-goto-char)))
 #+END_SRC
 
 *** ace-window
