@@ -1,4 +1,4 @@
-(setq straight-repository-branch "rr-fix-renamed-variable")
+(setq straight-repository-branch "develop")
 
 (defun tkn/bootstrap-straight ()
   (defvar bootstrap-version)
