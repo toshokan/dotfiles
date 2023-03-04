@@ -10,8 +10,10 @@ the user's Emacs directory"
 (load-file (tkn/emacs-d-filename "internals.el"))
 
 (tkn/bootstrap-straight)
-(straight-use-package 'org)
-(require 'org)
+
+(use-package org
+  :straight nil
+  :config (add-to-list 'org-modules 'org-habit t))
 
 ;; Load all necessary configs
 (tkn/load-configs)
