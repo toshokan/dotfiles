@@ -130,6 +130,11 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (global-set-key (kbd "M-S-<tab>") 'tab-previous)
   (global-set-key (kbd "M-S-<iso-lefttab>") 'tab-previous)
 #+END_SRC
+*** Windows
+#+BEGIN_SRC emacs-lisp
+  (use-package emacs
+    :config (setq switch-to-buffer-obey-display-actions t))
+#+END_SRC
 ** Prompts
 "yes" is too many letters
 #+BEGIN_SRC emacs-lisp
