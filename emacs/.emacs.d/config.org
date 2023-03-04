@@ -91,6 +91,10 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 
 *** Lines and line numbers
 #+BEGIN_SRC emacs-lisp
+  (setq hl-line-range-function
+        '(lambda ()
+           (cons (line-end-position)
+                 (line-beginning-position 2))))
   (global-hl-line-mode 1)
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
