@@ -1,5 +1,7 @@
 (setq vc-follow-symlinks t)
 
+(setq tkn/ignored-modules '())
+
 (defun tkn/emacs-d-filename (rel-name)
   "Evaluates to an absolute path to a file named `rel-name` in
 the user's Emacs directory"
@@ -11,8 +13,10 @@ the user's Emacs directory"
 
 (tkn/bootstrap-straight)
 
+(straight-use-package 'use-package)
+
 (use-package org
-  :straight nil
+  :straight t
   :config (add-to-list 'org-modules 'org-habit t))
 
 ;; Load all necessary configs

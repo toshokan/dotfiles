@@ -1,14 +1,19 @@
 * Early Startup Tasks
+** Frame decorations
+#+BEGIN_SRC emacs-lisp
+  (unless (memq 'frame-decorations tkn/ignored-modules)
+    (setq default-frame-alist '((undecorated . t)
+                                (vertical-scroll-bars . nil))))
+#+END_SRC
 ** Lexical Binding
 #+BEGIN_SRC emacs-lisp
   ;; -*- lexical-binding: t -*-
 #+END_SRC
-** Ensure we can load packages
+** Configure use-package
 *** use-package
 Ensure that ~use-package~ is always pulled in so that the rest of the
 packages can be installed.
 #+BEGIN_SRC emacs-lisp
-  ;; (straight-use-package 'use-package)
   (setq straight-use-package-by-default t)
 #+END_SRC
 ** Disable interlocking
@@ -37,6 +42,13 @@ Ideally I should get around to changing the locking implementation to allow putt
 #+END_SRC
 
 * General Configuration 
+** Local variables
+#+BEGIN_SRC emacs-lisp
+  (setq safe-local-variable-values
+        '((rust-format-on-save . t)
+          (cider-clojure-cli-aliases . "dev")
+          (TeX-command-extra-options . "-shell-escape")))
+#+END_SRC
 ** Change ~*scratch*~ major mode
 By default ~*scratch*~ runs in ~lisp-interaction-mode~, which is a
 ~prog-mode~.  This means all the trouble we go through to delay some
@@ -123,7 +135,8 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                     (bg-tab-current bg-magenta-subtle)
                     (bg-tab-other bg-tab-bar)
                     (cursor cyan)))
-    (load-theme 'modus-vivendi t))
+    (unless (memq 'themes tkn/ignored-modules)
+      (load-theme 'modus-vivendi t)))
 #+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
@@ -225,7 +238,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                      `(,to . ,spec)))))
 
   (use-package eglot
-    :straight nil
     :config
     (add-to-list 'eglot-server-programs
                  '(web-mode . ("npx" "@volar/vue-language-server" "--stdio" :initializationOptions tkn/volar-server-options)))
@@ -392,7 +404,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+BEGIN_SRC emacs-lisp
   (use-package vertico-directory
     :straight nil
-    :ensure nil
     :after vertico
     :bind (:map vertico-map
                 ("RET" . vertico-directory-enter)
@@ -467,12 +478,12 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+END_SRC
 **** forge integration
 #+BEGIN_SRC emacs-lisp
-  (use-package forge)
+  ;; (use-package forge)
 #+END_SRC
 **** todos
 #+BEGIN_SRC emacs-lisp
-  (use-package magit-todos
-    :config (magit-todos-mode))
+  ;; (use-package magit-todos
+  ;;   :config (magit-todos-mode))
 #+END_SRC
 *** projectile
 #+BEGIN_SRC emacs-lisp
@@ -559,6 +570,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 ** Interaction
 #+BEGIN_SRC emacs-lisp
   (defun tkn/find-in (dir initial)
+    (require 'consult)
     (let ((consult-async-split-style nil)
           (consult-find-args
            (concat consult-find-args " -maxdepth 1")))
@@ -585,7 +597,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     ("r" tkn/reload-config "reload")
     ("if" (find-file (tkn/emacs-d-filename "init.el")) "find init.el")
     ("ef" (find-file (tkn/emacs-d-filename "early-init.el")) "find early-init.el")
-    ("of" (tkn/find-in user-emacs-directory "\\.org") "find other configuration")
+    ("of" (tkn/find-in user-emacs-directory "\\.org ") "find other configuration")
     ("ir" (load-file (tkn/emacs-d-filename "init.el")) "reload init.el"))
   (global-set-key (kbd "C-z c") 'hydra-config/body)
 #+END_SRC
@@ -681,7 +693,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (defhydra hydra-agenda ()
     "Agenda operations"
     ("a" org-agenda "open agenda" :color blue)
-    ("f" (tkn/find-in (car org-agenda-files) "\\.org") "find" :color blue))
+    ("f" (tkn/find-in (car org-agenda-files) "\\.org ") "find" :color blue))
   (global-set-key (kbd "C-z a") 'hydra-agenda/body)
 #+END_SRC
 * General behaviour
@@ -702,6 +714,5 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   ;; File might not exist yet. Create an empty one.
   (unless (file-exists-p custom-file)
     (write-region "" nil custom-file))
-  (load custom-file)
 #+END_SRC
 

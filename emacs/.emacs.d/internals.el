@@ -14,8 +14,9 @@
 	(eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage)))
 
-(defvar tkn/conf-list (sort (file-expand-wildcards (tkn/emacs-d-filename "*.org")) 'string<)
-  "A list of config files to be sourced.")
+(defun tkn/get-conf-list()
+  "A list of config files to be sourced."
+  (sort (file-expand-wildcards (tkn/emacs-d-filename "*.org")) 'string<))
 
 (defun tkn/resolve-filename (filename)
   "If FILENAME is a symlink, resolves it, otherwise evalutes to FILENAME"
@@ -46,4 +47,4 @@ assumes it is `elisp`"
 		  (if (string-match ".org\\'" file-name)
 		      (tkn/org-babel-load-file file-name)
 		    (load-file file-name)))))
-    (mapcar load-f tkn/conf-list)))
+    (mapcar load-f (tkn/get-conf-list))))
