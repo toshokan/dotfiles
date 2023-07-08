@@ -11,13 +11,23 @@ the user's Emacs directory"
 ;; Pull in all internals
 (load-file (tkn/emacs-d-filename "internals.el"))
 
-(tkn/bootstrap-straight)
+(tkn/bootstrap-elpaca)
+(elpaca `(,@elpaca-order))
 
-(straight-use-package 'use-package)
+
+;; Install use-package support
+(elpaca elpaca-use-package
+  ;; Enable :elpaca use-package keyword.
+  (elpaca-use-package-mode)
+  ;; Assume :elpaca t unless otherwise specified.
+  (setq elpaca-use-package-by-default t))
+
+(elpaca-wait)
 
 (use-package org
-  :straight t
   :config (add-to-list 'org-modules 'org-habit t))
+
+(elpaca-wait)
 
 ;; Load all necessary configs
 (tkn/load-configs)

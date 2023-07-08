@@ -1,20 +1,13 @@
 * Early Startup Tasks
+** Lexical Binding
+#+BEGIN_SRC emacs-lisp
+  ;; -*- lexical-binding: t -*-
+#+END_SRC
 ** Frame decorations
 #+BEGIN_SRC emacs-lisp
   (unless (memq 'frame-decorations tkn/ignored-modules)
     (setq default-frame-alist '((undecorated . t)
                                 (vertical-scroll-bars . nil))))
-#+END_SRC
-** Lexical Binding
-#+BEGIN_SRC emacs-lisp
-  ;; -*- lexical-binding: t -*-
-#+END_SRC
-** Configure use-package
-*** use-package
-Ensure that ~use-package~ is always pulled in so that the rest of the
-packages can be installed.
-#+BEGIN_SRC emacs-lisp
-  (setq straight-use-package-by-default t)
 #+END_SRC
 ** Disable interlocking
 Interlocking interferes with many file watchers, notably webpack.
@@ -38,7 +31,8 @@ Ideally I should get around to changing the locking implementation to allow putt
           (* 2 (string-to-number (match-string 1)))))))
 
   (unless (version< emacs-version "28.0")
-    (setq native-comp-async-jobs-number (or (tkn/num-cpu-cores) 4)))
+    (setq native-comp-async-jobs-number (or (tkn/num-cpu-cores) 4)
+          native-comp-async-report-warnings-errors 'silent))
 #+END_SRC
 
 * General Configuration 
@@ -88,7 +82,11 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
      (set-face-attribute 'markdown-code-face nil
                          :inherit nil))
  #+END_SRC
-
+*** rainbow-delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
 *** Get rid of graphical prompts
 #+BEGIN_SRC emacs-lisp
 (setq use-dialog-box nil)
@@ -134,9 +132,15 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                     (bg-line-number-active bg-magenta-intense)
                     (bg-tab-current bg-magenta-subtle)
                     (bg-tab-other bg-tab-bar)
-                    (cursor cyan)))
+                    (cursor cyan))))
+#+END_SRC
+**** ef-themes
+#+BEGIN_SRC emacs-lisp
+  (use-package ef-themes
+    :config
+    (setq ef-themes-to-toggle '(ef-summer ef-winter))
     (unless (memq 'themes tkn/ignored-modules)
-      (load-theme 'modus-vivendi t)))
+      (ef-themes-select 'ef-summer)))
 #+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
@@ -149,8 +153,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+END_SRC
 *** Windows
 #+BEGIN_SRC emacs-lisp
-  (use-package emacs
-    :config (setq switch-to-buffer-obey-display-actions t))
+  (setq switch-to-buffer-obey-display-actions t)
 #+END_SRC
 ** Prompts
 "yes" is too many letters
@@ -166,7 +169,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** tramp
 #+BEGIN_SRC emacs-lisp
   (use-package tramp
-    :straight nil
+    :elpaca nil
     :config (connection-local-set-profile-variables
              'remote-zsh
              '((shell-file-name . "/bin/zsh"))))
@@ -184,6 +187,21 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     :config (setq treesit-auto-install 'prompt)
     (global-treesit-auto-mode))
 #+END_SRC
+*** org
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :config (setq org-extend-today-until 4))
+#+END_SRC
+
+*** org-roam
+#+BEGIN_SRC emacs-lisp
+  (use-package org-roam
+    :config (setq org-roam-database-connector 'sqlite-builtin
+                  org-roam-capture-templates '(("d" "default" plain "%?" :target
+                                                (file+head "${slug}.org" "#+title: ${title}")
+                                                :unnarrowed t)))
+    (org-roam-db-autosync-mode))
+#+END_SRC
 ** Bindings
 *** hydra
 #+BEGIN_SRC emacs-lisp
@@ -194,6 +212,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :config
+    (setq which-key-lighter "")
     (which-key-mode))
 #+END_SRC
 
@@ -205,24 +224,36 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     :config (setq corfu-auto t
                   corfu-quit-no-match 'separator))
 
-  (use-package emacs
-    :init (setq completion-cycle-threshold 3
-                tab-always-indent 'complete))
+  (setq completion-cycle-threshold 3
+        tab-always-indent 'complete)
 #+END_SRC
 
 *** flymake
 #+BEGIN_SRC emacs-lisp
   (use-package flymake
-    :straight nil
+    :elpaca nil
     :hook (prog-mode . flymake-mode)
-    :config (setq eldoc-echo-area-prefer-doc-buffer t
+    :config (setq help-at-pt-display-when-idle t
+                  help-at-pt-timer-delay 0.2
+                  eldoc-echo-area-use-multiline-p nil
+                  eldoc-echo-area-prefer-doc-buffer t
                   eldoc-documentation-functions
                   (cons #'flymake-eldoc-function
                         (remove #'flymake-eldoc-function eldoc-documentation-functions))
-                  eldoc-documentation-strategy #'eldoc-documentation-compose))
+                  eldoc-documentation-strategy #'eldoc-documentation-compose)
+    (help-at-pt-cancel-timer)
+    (help-at-pt-set-timer))
 #+END_SRC
 
 ** Language and Filetype Support
+*** Formatting
+**** apheleia
+#+BEGIN_SRC emacs-lisp
+  (use-package apheleia
+    :config
+    (setq apheleia-mode-lighter "")
+    (apheleia-global-mode +1))
+#+END_SRC
 *** LSP
 #+BEGIN_SRC emacs-lisp
   (defun tkn/volar-server-options (server)
@@ -233,13 +264,14 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
          `(:typescript (:tsdk ,(file-name-as-directory ts-path))))))
 
   (defun tkn/copy-eglot-config (from to)
-    (cl-destructuring-bind (_ _ spec) (eglot--lookup-mode from)
-      (when spec
-        (add-to-list 'eglot-server-programs
-                     `(,to . ,spec)))))
+    (when-let ((spec (eglot--lookup-mode from)))
+      (add-to-list 'eglot-server-programs
+                   `(,to . ,(cdr spec))))
+    nil)
 
   (use-package eglot
     :config
+    (add-to-list 'eglot-ignored-server-capabilities ':inlayHintProvider)
     (add-to-list 'eglot-server-programs
                  '(web-mode . ("npx" "@volar/vue-language-server" "--stdio" :initializationOptions tkn/volar-server-options)))
     (add-to-list 'eglot-server-programs
@@ -247,18 +279,10 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     (tkn/copy-eglot-config 'rust-mode 'rust-ts-mode))
 #+END_SRC
 *** Clojure
-**** cider
 #+BEGIN_SRC emacs-lisp
   (use-package cider
     :defer t)
 #+END_SRC
-
-**** rainbow-delimiters
-#+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
-
 *** Go
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
@@ -272,16 +296,11 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (setq js-indent-level 2
         typescript-indent-level 2)
 #+END_SRC
-**** prettier
-#+BEGIN_SRC emacs-lisp
-  (use-package prettier-js
-    :defer t)
-#+END_SRC
 *** LaTeX
 **** Auctex
 #+BEGIN_SRC emacs-lisp
   (use-package tex
-    :straight auctex
+    :elpaca auctex
     :defer t
     :config
     (setq TeX-auto-save t
@@ -336,6 +355,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** TOML
 #+BEGIN_SRC emacs-lisp
   (use-package conf-mode
+    :elpaca nil
     :demand t 
     :config (add-hook 'conf-toml-mode-hook 'smartparens-mode))
 #+END_SRC
@@ -396,7 +416,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** Vertico
 #+BEGIN_SRC emacs-lisp
   (use-package vertico
-    :straight (:files (:defaults "extensions/*"))
+    :elpaca (:files (:defaults "extensions/*"))
     :config
     (setq vertico-sort-function #'vertico-sort-alpha)
     (vertico-mode 1))
@@ -404,7 +424,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 **** vertico-directory extension
 #+BEGIN_SRC emacs-lisp
   (use-package vertico-directory
-    :straight nil
+    :elpaca nil
     :after vertico
     :bind (:map vertico-map
                 ("RET" . vertico-directory-enter)
@@ -434,13 +454,17 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
             ("C-h B" . embark-bindings))
     :config
     (define-key embark-identifier-map "R" 'eglot-rename)
+    (define-key embark-identifier-map "I" 'eglot-code-actions)
 
     (push 'embark--allow-edit
-          (alist-get 'eglot-rename embark-target-injection-hooks)))
+          (alist-get 'eglot-rename embark-target-injection-hooks))
+    (push 'embark--ignore-target
+          (alist-get 'eglot-code-actions embark-target-injection-hooks)))
 
   (use-package embark-consult
     :after (consult embark))
 #+END_SRC
+
 *** Orderless
 #+BEGIN_SRC emacs-lisp
   (use-package orderless
@@ -476,15 +500,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (use-package magit
     :defer t
     :bind (("C-c g" . 'magit-status)))
-#+END_SRC
-**** forge integration
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package forge)
-#+END_SRC
-**** todos
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package magit-todos
-  ;;   :config (magit-todos-mode))
 #+END_SRC
 *** projectile
 #+BEGIN_SRC emacs-lisp
@@ -590,6 +605,10 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (global-set-key (kbd "C-S-l") 'windmove-right)
 #+END_SRC
 ** Hydras
+*** Wait for installation
+#+BEGIN_SRC emacs-lisp
+(elpaca-wait)
+#+END_SRC
 *** Configuration
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-config (:color blue)
@@ -685,8 +704,10 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+BEGIN_SRC emacs-lisp
   (defhydra hydra-themes ()
     "Theme operations"
-    ("t" modus-themes-toggle "toggle" :color blue)
-    ("s" modus-themes-select "select" :color blue))
+    ("t" modus-themes-toggle "modus toggle" :color blue)
+    ("T" ef-themes-toggle "ef toggle" :color blue)
+    ("s" modus-themes-select "modus select" :color blue)
+    ("S" ef-themes-select "ef select" :color blue))
   (global-set-key (kbd "C-z T") 'hydra-themes/body)
 #+END_SRC
 *** Agenda
@@ -710,10 +731,14 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (setq vc-follow-symlinks t)
 #+END_SRC
 *** Keep Emacs "custom" files untracked
+
 #+BEGIN_SRC emacs-lisp
-  (setq custom-file (tkn/emacs-d-filename "custom.el"))
-  ;; File might not exist yet. Create an empty one.
-  (unless (file-exists-p custom-file)
-    (write-region "" nil custom-file))
+  (defun tkn/delete-custom-file ()
+    (delete-file custom-file))
+
+  (setq custom-file
+        (make-temp-file "emacs-custom-" nil nil ";; temporary file\n"))
+
+  (add-hook 'kill-emacs-hook 'tkn/delete-custom-file)
 #+END_SRC
 
