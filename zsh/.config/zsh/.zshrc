@@ -29,6 +29,9 @@ zstyle ':completion:*:files' ignored-patterns '*?.o' '*?~'
 zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]-}={[:upper:][:lower:]_}' 'r:|[-_./]=* r:|=*'
 zstyle ":completion:*:commands" rehash 1
 
+# Direnv
+eval "$(direnv hook zsh)"
+
 # General
 setopt AUTO_CD EXTENDED_GLOB MULTIOS CORRECT AUTO_PUSHD
 
