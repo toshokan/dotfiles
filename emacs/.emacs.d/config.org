@@ -169,7 +169,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** tramp
 #+BEGIN_SRC emacs-lisp
   (use-package tramp
-    :elpaca nil
     :config (connection-local-set-profile-variables
              'remote-zsh
              '((shell-file-name . "/bin/zsh"))))
@@ -184,12 +183,16 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+BEGIN_SRC emacs-lisp
   (use-package treesit-auto
     :if (not (version< emacs-version "29.0"))
-    :config (setq treesit-auto-install 'prompt)
+    :config
+    (setq treesit-auto-install 'prompt)
+    (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+    (add-to-list 'auto-mode-alist '("\\.js\\'" . typescript-ts-mode))
     (global-treesit-auto-mode))
 #+END_SRC
 *** org
 #+BEGIN_SRC emacs-lisp
   (use-package org
+    :disabled t
     :config (setq org-extend-today-until 4))
 #+END_SRC
 
@@ -199,8 +202,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     :config (setq org-roam-database-connector 'sqlite-builtin
                   org-roam-capture-templates '(("d" "default" plain "%?" :target
                                                 (file+head "${slug}.org" "#+title: ${title}")
-                                                :unnarrowed t)))
-    (org-roam-db-autosync-mode))
+                                                :unnarrowed t))))
 #+END_SRC
 ** Bindings
 *** hydra
@@ -231,7 +233,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** flymake
 #+BEGIN_SRC emacs-lisp
   (use-package flymake
-    :elpaca nil
     :hook (prog-mode . flymake-mode)
     :config (setq help-at-pt-display-when-idle t
                   help-at-pt-timer-delay 0.2
@@ -252,11 +253,13 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
   (use-package apheleia
     :config
     (setq apheleia-mode-lighter "")
+    (setf (alist-get 'rustfmt apheleia-formatters)
+        '("rustfmt" "--quiet" "--edition" "2021" "--emit" "stdout"))
     (apheleia-global-mode +1))
 #+END_SRC
 *** LSP
 #+BEGIN_SRC emacs-lisp
-  (defun tkn/volar-server-options (server)
+  (defun tkn/vue-language-server-options (server)
     (let* ((project-root (when (fboundp 'projectile-project-root)
                            (projectile-project-root)))
             (ts-path (concat project-root "node_modules/typescript/lib")))
@@ -269,18 +272,46 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                    `(,to . ,(cdr spec))))
     nil)
 
+  (defvar tkn/web-mode-eglot-servers '(("vue" . ("npx" "@vue/language-server" "--stdio" :initializationOptions tkn/vue-language-server-options))
+                                       ("svelte-language-server" . ("npx" "svelte-language-server" "--stdio"))))
+
+  (defun tkn/get-eglot-server (candidates)
+    (lambda (is-interactive)
+      (if is-interactive
+          (let* ((candidates tkn/web-mode-eglot-servers)
+                 (selection (completing-read "language server?" candidates)))
+            (alist-get selection candidates nil nil 'equal)))))
+
+  (define-derived-mode vue-mode web-mode "Vue" "Major mode for Vue.js")
+  (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
+
+  (define-derived-mode astro-mode web-mode "astro" "Major mode for Astro")
+  (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-mode))
+
   (use-package eglot
     :config
     (add-to-list 'eglot-ignored-server-capabilities ':inlayHintProvider)
+    (add-to-list 'eglot-ignored-server-capabilities ':workspace/didChangeWorkspaceFolders)
     (add-to-list 'eglot-server-programs
-                 '(web-mode . ("npx" "@volar/vue-language-server" "--stdio" :initializationOptions tkn/volar-server-options)))
+                 '(((vue-mode :language-id "vue")
+                    (typescript-ts-mode :language-id "typescript"))
+                   .
+                   ("npx" "@vue/language-server" "--stdio" :initializationOptions tkn/vue-language-server-options)))
+    ;; (add-to-list 'eglot-server-programs
+    ;;              `((vue-mode :language-id "vue") . ,(tkn/get-eglot-server tkn/web-mode-eglot-servers)))
     (add-to-list 'eglot-server-programs
                  '(enh-ruby-mode . ("bundler" "exec" "solargraph" "stdio")))
-    (tkn/copy-eglot-config 'rust-mode 'rust-ts-mode))
+    (add-to-list 'eglot-server-programs
+                 '(astro-mode . ("npx" "astro-ls" "--stdio"
+                                 :initializationOptions
+                                 (:typescript (:tsdk "./node_modules/typescript/lib")))))
+    ;; (tkn/copy-eglot-config 'rust-mode 'rust-ts-mode)
+    )
 #+END_SRC
 *** Clojure
 #+BEGIN_SRC emacs-lisp
   (use-package cider
+    :disabled t
     :defer t)
 #+END_SRC
 *** Go
@@ -299,9 +330,15 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** LaTeX
 **** Auctex
 #+BEGIN_SRC emacs-lisp
-  (use-package tex
-    :elpaca auctex
-    :defer t
+  (use-package auctex
+    ;; :elpaca ( :pre-build (("./autogen.sh")
+    ;;                         ("./configure"
+    ;;                          "--without-texmf-dir"
+    ;;                          "--with-packagelispdir=./"
+    ;;                          "--with-packagedatadir=./")
+    ;;                         ("make"))
+    ;;             :build (:not elpaca--compile-info)
+    ;;             :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style"))
     :config
     (setq TeX-auto-save t
           TeX-parse-self t
@@ -355,7 +392,6 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** TOML
 #+BEGIN_SRC emacs-lisp
   (use-package conf-mode
-    :elpaca nil
     :demand t 
     :config (add-hook 'conf-toml-mode-hook 'smartparens-mode))
 #+END_SRC
@@ -363,7 +399,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :defer t
-    :mode ("\\.erb\\'" "\\.vue\\'" "\\.ts\\'")
+    :mode ("\\.erb\\'" "\\.html\\'")
     :config (setq web-mode-markup-indent-offset 2
                   web-mode-css-indent-offset 2
                   web-mode-code-indent-offset 2
@@ -416,7 +452,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 *** Vertico
 #+BEGIN_SRC emacs-lisp
   (use-package vertico
-    :elpaca (:files (:defaults "extensions/*"))
+    :straight (:files (:defaults "extensions/*"))
     :config
     (setq vertico-sort-function #'vertico-sort-alpha)
     (vertico-mode 1))
@@ -424,7 +460,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 **** vertico-directory extension
 #+BEGIN_SRC emacs-lisp
   (use-package vertico-directory
-    :elpaca nil
+    :straight nil
     :after vertico
     :bind (:map vertico-map
                 ("RET" . vertico-directory-enter)
@@ -509,7 +545,11 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     (projectile-mode +1)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 #+END_SRC
-
+*** direnv
+#+BEGIN_SRC emacs-lisp
+  (use-package envrc
+    :config (envrc-global-mode))
+#+END_SRC
 * Mode configuration
 ** cc mode
 #+BEGIN_SRC emacs-lisp
@@ -607,7 +647,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
 ** Hydras
 *** Wait for installation
 #+BEGIN_SRC emacs-lisp
-(elpaca-wait)
+  ;; (elpaca-wait)
 #+END_SRC
 *** Configuration
 #+BEGIN_SRC emacs-lisp
@@ -637,6 +677,7 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
     ("s" hydra-smartparens/body "smartparens")
     ("m" hydra-multiple-cursors/body "multiple-cursors")
     ("r" hydra-rectangle/body "rectangles")
+    ("G" consult-ripgrep "rg")
     ;; ("e" hydra-lsp/body "editing")
     ("f" tkn/find-favourite "favourite"))
   (global-set-key (kbd "C-z z") 'hydra-index/body)
