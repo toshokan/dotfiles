@@ -297,15 +297,12 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                     (typescript-ts-mode :language-id "typescript"))
                    .
                    ("npx" "@vue/language-server" "--stdio" :initializationOptions tkn/vue-language-server-options)))
-    ;; (add-to-list 'eglot-server-programs
-    ;;              `((vue-mode :language-id "vue") . ,(tkn/get-eglot-server tkn/web-mode-eglot-servers)))
     (add-to-list 'eglot-server-programs
                  '(enh-ruby-mode . ("bundler" "exec" "solargraph" "stdio")))
     (add-to-list 'eglot-server-programs
                  '(astro-mode . ("npx" "astro-ls" "--stdio"
                                  :initializationOptions
                                  (:typescript (:tsdk "./node_modules/typescript/lib")))))
-    ;; (tkn/copy-eglot-config 'rust-mode 'rust-ts-mode)
     )
 #+END_SRC
 *** Clojure
@@ -322,6 +319,12 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                        (setq tab-width 4))))
 #+END_SRC
 *** JS/TS
+**** LSP
+#+BEGIN_SRC emacs-lisp
+  (use-package eglot
+    :config
+    (add-to-list 'eglot-server-programs '(typescript-ts-mode . ("npx" "typescript-language-server" "--stdio"))))
+#+END_SRC
 **** Formatting
 #+BEGIN_SRC emacs-lisp
   (setq js-indent-level 2
@@ -405,6 +408,20 @@ Without this, there is a delay when making a tty frame with `emacsclient -t`.
                   web-mode-code-indent-offset 2
                   web-mode-script-padding 0
                   web-mode-style-padding 0))
+#+END_SRC
+*** Svelte
+#+BEGIN_SRC emacs-lisp
+  (use-package svelte-ts-mode
+    :straight (svelte-ts-mode :type git :host github :repo "leafOfTree/svelte-ts-mode")
+    :after eglot
+    :config
+    (dolist (item svelte-ts-mode-language-source-alist)
+      (add-to-list 'treesit-language-source-alist item))
+    (add-to-list 'treesit-language-source-alist
+                 '(tsx "https://github.com/tree-sitter/tree-sitter-typescript"
+                       nil "tsx/src"))
+    (add-to-list 'eglot-server-programs '(svelte-ts-mode . ("npx" "svelte-language-server" "--stdio"))))
+
 #+END_SRC
 *** YAML
 #+BEGIN_SRC emacs-lisp
